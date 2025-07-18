@@ -150,23 +150,35 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               // Continue button
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _statementController.text.trim().isNotEmpty
-                      ? _proceedToRecording
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: _statementController.text.trim().isNotEmpty
+                        ? AppTheme.primaryGradient
+                        : null,
+                    color: _statementController.text.trim().isEmpty
+                        ? Colors.grey.shade300
+                        : null,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Text(
-                    '继续录制',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                  child: ElevatedButton(
+                    onPressed: _statementController.text.trim().isNotEmpty
+                        ? _proceedToRecording
+                        : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      shadowColor: Colors.transparent,
+                    ),
+                    child: const Text(
+                      '继续录制',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -281,18 +293,10 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   }
 
   Widget _buildCategoryGrid(List<HabitCategory> categories) {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 1.2,
-      ),
-      itemCount: categories.length,
-      itemBuilder: (context, index) {
-        final category = categories[index];
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: categories.map((category) {
         final isSelected = _selectedCategory == category;
         
         return GestureDetector(
@@ -304,35 +308,34 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             _generateStatement();
           },
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
               border: Border.all(
                 color: isSelected ? AppTheme.primaryColor : Colors.grey.shade300,
               ),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(20),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   category.icon,
-                  style: const TextStyle(fontSize: 32),
+                  style: const TextStyle(fontSize: 16),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(width: 6),
                 Text(
                   category.name,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
                     color: isSelected ? AppTheme.primaryColor : AppTheme.textPrimaryColor,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ],
             ),
           ),
         );
-      },
+      }).toList(),
     );
   }
 

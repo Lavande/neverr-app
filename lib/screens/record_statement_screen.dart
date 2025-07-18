@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../core/theme/app_theme.dart';
 import '../core/router/app_router.dart';
 import '../core/services/audio_service.dart';
@@ -54,7 +55,9 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
   }
 
   Future<void> _initializeAudio() async {
+    print('Initializing audio service...');
     await AudioService.initialize();
+    print('Audio service initialized');
   }
 
   @override
@@ -65,23 +68,70 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
   }
 
   Future<void> _startRecording() async {
-    final hasPermission = await AudioService.requestPermission();
-    if (!hasPermission) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('需要麦克风权限才能录音')),
-      );
-      return;
-    }
+    try {
+      print('🎤 User tapped record button');
+      final hasPermission = await AudioService.requestPermission();
+      if (!hasPermission) {
+        if (mounted) {
+          _showPermissionDialog();
+        }
+        return;
+      }
 
-    final path = await AudioService.startRecording();
-    if (path != null) {
-      setState(() {
-        _isRecording = true;
-        _recordingPath = path;
-      });
-      _pulseController.repeat(reverse: true);
-      _startTimer();
+      final path = await AudioService.startRecording();
+      if (path != null) {
+        setState(() {
+          _isRecording = true;
+          _recordingPath = path;
+        });
+        _pulseController.repeat(reverse: true);
+        _startTimer();
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('录音启动失败，请重试')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('录音出错: $e')),
+        );
+      }
     }
+  }
+
+  void _showPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('需要麦克风权限'),
+          content: const Text(
+            '为了录制您的习惯语句，需要访问麦克风权限。\n\n'
+            '请按照以下步骤操作：\n'
+            '1. 点击"去设置"按钮\n'
+            '2. 找到"麦克风"选项\n'
+            '3. 打开麦克风权限\n'
+            '4. 返回App重试',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await openAppSettings();
+              },
+              child: const Text('去设置'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _stopRecording() async {
@@ -317,21 +367,28 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
                       // Save button
                       SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _saveAndContinue,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.primaryColor,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            gradient: AppTheme.primaryGradient,
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
                           ),
-                          child: const Text(
-                            '保存并继续',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
+                          child: ElevatedButton(
+                            onPressed: _saveAndContinue,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              shadowColor: Colors.transparent,
+                            ),
+                            child: const Text(
+                              '保存并继续',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ),

@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Color scheme based on UI design requirements
-  static const Color primaryColor = Color(0xFF7B68EE); // 宁静蓝
-  static const Color secondaryColor = Color(0xFF98D8C8); // 宁静绿
-  static const Color backgroundColor = Color(0xFFF7F5F3); // 浅米色
+  // Color scheme based on healing/therapeutic design
+  static const Color primaryColor = Color(0xFF567B95); // 静谧蓝 - 主色调
+  static const Color secondaryColor = Color(0xFF6BA68B); // 宁静绿 - 辅助色
+  static const Color backgroundColor = Color(0xFFF7F5EF); // 浅米色背景
   static const Color surfaceColor = Color(0xFFFFFFFF);
   static const Color textPrimaryColor = Color(0xFF2D3748);
   static const Color textSecondaryColor = Color(0xFF718096);
-  static const Color accentColor = Color(0xFFFED7D7); // 温和红色用于重要按钮
-  static const Color successColor = Color(0xFF68D391);
+  static const Color accentColor = Color(0xFF6BA68B); // 使用宁静绿作为强调色
+  static const Color successColor = Color(0xFF6BA68B);
   static const Color warningColor = Color(0xFFFBB6CE);
+  
+  // Gradient colors for buttons
+  static const LinearGradient primaryGradient = LinearGradient(
+    colors: [Color(0xFF567B95), Color(0xFF6BA68B)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+  
+  static const LinearGradient secondaryGradient = LinearGradient(
+    colors: [Color(0xFF6BA68B), Color(0xFF567B95)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 
   static ThemeData get lightTheme {
     return ThemeData(
