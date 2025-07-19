@@ -18,37 +18,110 @@ class HabitDetailScreen extends StatefulWidget {
   State<HabitDetailScreen> createState() => _HabitDetailScreenState();
 }
 
-class _HabitDetailScreenState extends State<HabitDetailScreen> {
+class _HabitDetailScreenState extends State<HabitDetailScreen>
+    with TickerProviderStateMixin {
   final TextEditingController _statementController = TextEditingController();
   bool _isEditing = false;
   bool _isPlaying = false;
   DateTime _selectedDay = DateTime.now();
+  int _loopCount = 1;
+  int _currentLoop = 0;
+  bool _isLoopPlaying = false;
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
 
   @override
   void initState() {
     super.initState();
     _statementController.text = widget.habit.statement;
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.elasticOut),
+    );
   }
 
   @override
   void dispose() {
     _statementController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
+  Future<void> _onSelfReading() async {
+    // 触发脉冲动画
+    _pulseController.forward().then((_) => _pulseController.reverse());
+    
+    // 增加重复次数
+    final habitProvider = Provider.of<HabitProvider>(context, listen: false);
+    final currentHabit = habitProvider.getHabitById(widget.habit.id) ?? widget.habit;
+    
+    try {
+      final today = DateTime.now();
+      final dateKey = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+      final newDailyRepeatCounts = Map<String, int>.from(currentHabit.dailyRepeatCounts);
+      newDailyRepeatCounts[dateKey] = (newDailyRepeatCounts[dateKey] ?? 0) + 1;
+      
+      // 如果是今天的第一次重复，添加到完成日期
+      final newCompletedDates = List<DateTime>.from(currentHabit.completedDates);
+      final todayNormalized = DateTime(today.year, today.month, today.day);
+      final isAlreadyCompleted = newCompletedDates.any((date) => 
+        date.year == todayNormalized.year && 
+        date.month == todayNormalized.month && 
+        date.day == todayNormalized.day
+      );
+      if (!isAlreadyCompleted && currentHabit.todayRepeatCount == 0) {
+        newCompletedDates.add(todayNormalized);
+      }
+      
+      final updatedHabit = currentHabit.copyWith(
+        todayRepeatCount: currentHabit.todayRepeatCount + 1,
+        dailyRepeatCounts: newDailyRepeatCounts,
+        completedDates: newCompletedDates,
+      );
+      await habitProvider.updateHabit(updatedHabit);
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('很棒！已记录第 ${updatedHabit.todayRepeatCount} 次朗读'),
+            backgroundColor: AppTheme.successColor,
+            duration: const Duration(seconds: 1),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('记录失败: $e')),
+        );
+      }
+    }
+  }
+
   Future<void> _playAudio() async {
-    if (widget.habit.audioPath != null) {
+    final habitProvider = Provider.of<HabitProvider>(context, listen: false);
+    final currentHabit = habitProvider.getHabitById(widget.habit.id) ?? widget.habit;
+    
+    if (currentHabit.audioPath != null) {
       setState(() {
         _isPlaying = true;
       });
       
       try {
-        await AudioService.playRecording(widget.habit.audioPath!);
+        await AudioService.playRecording(currentHabit.audioPath!);
         await Future.delayed(const Duration(seconds: 5));
+        
+        // 播放完成后增加重复次数
+        await _incrementRepeatCount();
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('播放失败: $e')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('播放失败: $e')),
+          );
+        }
       } finally {
         if (mounted) {
           setState(() {
@@ -56,6 +129,91 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
           });
         }
       }
+    }
+  }
+
+  Future<void> _playAudioLoop() async {
+    final habitProvider = Provider.of<HabitProvider>(context, listen: false);
+    final currentHabit = habitProvider.getHabitById(widget.habit.id) ?? widget.habit;
+    
+    if (currentHabit.audioPath == null) return;
+    
+    setState(() {
+      _isLoopPlaying = true;
+      _currentLoop = 0;
+    });
+    
+    try {
+      for (int i = 0; i < _loopCount; i++) {
+        if (!_isLoopPlaying) break;
+        
+        setState(() {
+          _currentLoop = i + 1;
+        });
+        
+        await AudioService.playRecording(currentHabit.audioPath!);
+        await Future.delayed(const Duration(seconds: 5));
+        
+        if (_isLoopPlaying) {
+          await _incrementRepeatCount();
+        }
+        
+        // 循环间隔
+        if (i < _loopCount - 1 && _isLoopPlaying) {
+          await Future.delayed(const Duration(milliseconds: 500));
+        }
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('播放失败: $e')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoopPlaying = false;
+          _currentLoop = 0;
+        });
+      }
+    }
+  }
+
+  Future<void> _stopLoop() async {
+    setState(() {
+      _isLoopPlaying = false;
+    });
+    await AudioService.stopPlaying();
+  }
+
+  Future<void> _incrementRepeatCount() async {
+    final habitProvider = Provider.of<HabitProvider>(context, listen: false);
+    final currentHabit = habitProvider.getHabitById(widget.habit.id) ?? widget.habit;
+    
+    try {
+      final today = DateTime.now();
+      final dateKey = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+      final newDailyRepeatCounts = Map<String, int>.from(currentHabit.dailyRepeatCounts);
+      newDailyRepeatCounts[dateKey] = (newDailyRepeatCounts[dateKey] ?? 0) + 1;
+      
+      // 如果是今天的第一次重复，添加到完成日期
+      final newCompletedDates = List<DateTime>.from(currentHabit.completedDates);
+      final todayNormalized = DateTime(today.year, today.month, today.day);
+      final isAlreadyCompleted = newCompletedDates.any((date) => 
+        date.year == todayNormalized.year && 
+        date.month == todayNormalized.month && 
+        date.day == todayNormalized.day
+      );
+      if (!isAlreadyCompleted && currentHabit.todayRepeatCount == 0) {
+        newCompletedDates.add(todayNormalized);
+      }
+      
+      final updatedHabit = currentHabit.copyWith(
+        todayRepeatCount: currentHabit.todayRepeatCount + 1,
+        dailyRepeatCounts: newDailyRepeatCounts,
+        completedDates: newCompletedDates,
+      );
+      await habitProvider.updateHabit(updatedHabit);
+    } catch (e) {
+      // 静默处理错误，不影响播放体验
     }
   }
 
@@ -120,13 +278,18 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: Text(widget.habit.title),
-        backgroundColor: AppTheme.backgroundColor,
-        elevation: 0,
-        actions: [
+    return Consumer<HabitProvider>(
+      builder: (context, habitProvider, child) {
+        // Get the latest habit data from provider
+        final currentHabit = habitProvider.getHabitById(widget.habit.id) ?? widget.habit;
+        
+        return Scaffold(
+          backgroundColor: AppTheme.backgroundColor,
+          appBar: AppBar(
+            title: Text(currentHabit.title),
+            backgroundColor: AppTheme.backgroundColor,
+            elevation: 0,
+            actions: [
           if (_isEditing)
             TextButton(
               onPressed: _saveChanges,
@@ -192,7 +355,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                       )
                     else
                       Text(
-                        widget.habit.statement,
+                        currentHabit.statement,
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                           color: AppTheme.textPrimaryColor,
                           height: 1.5,
@@ -201,23 +364,214 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                     
                     const SizedBox(height: 16),
                     
-                    // Play button
-                    Center(
-                      child: ElevatedButton.icon(
-                        onPressed: _playAudio,
-                        icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow),
-                        label: Text(_isPlaying ? '停止播放' : '播放语音'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.primaryColor,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 32,
-                            vertical: 16,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                    // Reading options
+                    Text(
+                      '练习方式',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.textPrimaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    
+                    // Self reading option (recommended)
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: AppTheme.primaryColor.withOpacity(0.3),
                         ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.mic,
+                                color: AppTheme.primaryColor,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '自己朗读（推荐）',
+                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppTheme.primaryColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '对着句子自己朗读，每读一次点击按钮记录',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: AppTheme.textSecondaryColor,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Center(
+                            child: AnimatedBuilder(
+                              animation: _pulseAnimation,
+                              builder: (context, child) {
+                                return Transform.scale(
+                                  scale: _pulseAnimation.value,
+                                  child: ElevatedButton.icon(
+                                    onPressed: _onSelfReading,
+                                    icon: const Icon(Icons.add_circle),
+                                    label: const Text('我读了一遍'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppTheme.primaryColor,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 24,
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    
+                    const SizedBox(height: 16),
+                    
+                    // Audio playback option
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.headphones,
+                                color: Colors.grey.shade600,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '播放录音（适合公共场合）',
+                                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey.shade700,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '播放之前录制的语音，可选择循环次数',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: AppTheme.textSecondaryColor,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          
+                          // Loop count selector
+                          Row(
+                            children: [
+                              Text(
+                                '循环次数:',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              const SizedBox(width: 8),
+                              ...List.generate(3, (index) {
+                                final count = [1, 5, 10][index];
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: ChoiceChip(
+                                    label: Text('${count}次'),
+                                    selected: _loopCount == count,
+                                    onSelected: (selected) {
+                                      if (selected) {
+                                        setState(() {
+                                          _loopCount = count;
+                                        });
+                                      }
+                                    },
+                                    selectedColor: AppTheme.primaryColor.withOpacity(0.2),
+                                    labelStyle: TextStyle(
+                                      color: _loopCount == count 
+                                          ? AppTheme.primaryColor 
+                                          : Colors.grey.shade600,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ],
+                          ),
+                          
+                          const SizedBox(height: 12),
+                          
+                          // Play controls
+                          if (currentHabit.audioPath != null)
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: _isLoopPlaying ? null : (_isPlaying ? null : _playAudio),
+                                    icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow),
+                                    label: Text(_isPlaying ? '播放中...' : '播放一次'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey.shade600,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: _isPlaying ? null : (_isLoopPlaying ? _stopLoop : _playAudioLoop),
+                                    icon: Icon(_isLoopPlaying ? Icons.stop : Icons.repeat),
+                                    label: Text(_isLoopPlaying 
+                                        ? '停止 (${_currentLoop}/${_loopCount})'
+                                        : '循环播放'),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _isLoopPlaying 
+                                          ? AppTheme.warningColor 
+                                          : AppTheme.secondaryColor,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          else
+                            Text(
+                              '暂无录音文件',
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Colors.grey.shade500,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                   ],
@@ -252,21 +606,21 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                       children: [
                         _buildStatItem(
                           '当前连续',
-                          '${widget.habit.currentStreak}天',
+                          '${currentHabit.currentStreak}天',
                           AppTheme.successColor,
                           Icons.local_fire_department,
                         ),
                         _buildStatItem(
                           '总完成',
-                          '${widget.habit.completedDates.length}天',
+                          '${currentHabit.completedDates.length}天',
                           AppTheme.primaryColor,
                           Icons.check_circle,
                         ),
                         _buildStatItem(
-                          '完成率',
-                          '${(widget.habit.completionRate * 100).round()}%',
+                          '今日重复',
+                          '${currentHabit.todayRepeatCount}次',
                           AppTheme.secondaryColor,
-                          Icons.trending_up,
+                          Icons.refresh,
                         ),
                       ],
                     ),
@@ -298,25 +652,76 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
                     const SizedBox(height: 16),
                     
                     TableCalendar<DateTime>(
-                      firstDay: widget.habit.createdAt,
+                      firstDay: currentHabit.createdAt,
                       lastDay: DateTime.now().add(const Duration(days: 365)),
                       focusedDay: _selectedDay,
                       calendarFormat: CalendarFormat.month,
                       eventLoader: (day) {
-                        return widget.habit.completedDates.where((date) =>
-                          date.year == day.year &&
-                          date.month == day.month &&
-                          date.day == day.day,
-                        ).toList();
+                        final repeatCount = currentHabit.getRepeatCountForDate(day);
+                        // 如果有重复次数，返回该日期作为事件
+                        return repeatCount > 0 ? [day] : [];
                       },
+                      calendarBuilders: CalendarBuilders(
+                        defaultBuilder: (context, day, focusedDay) {
+                          final repeatCount = currentHabit.getRepeatCountForDate(day);
+                          if (repeatCount > 0) {
+                            return Container(
+                              margin: const EdgeInsets.all(4.0),
+                              alignment: Alignment.center,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  _buildRepeatCountMarker(repeatCount),
+                                  Text(
+                                    '${day.day}',
+                                    style: TextStyle(
+                                      color: AppTheme.textPrimaryColor,
+                                      fontWeight: FontWeight.normal,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          return null;
+                        },
+                        todayBuilder: (context, day, focusedDay) {
+                          final repeatCount = currentHabit.getRepeatCountForDate(day);
+                          return Container(
+                            margin: const EdgeInsets.all(4.0),
+                            alignment: Alignment.center,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                if (repeatCount > 0) _buildRepeatCountMarker(repeatCount),
+                                Text(
+                                  '${day.day}',
+                                  style: TextStyle(
+                                    color: AppTheme.primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 2,
+                                  child: Container(
+                                    width: 4,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: AppTheme.primaryColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                       calendarStyle: CalendarStyle(
                         outsideDaysVisible: false,
                         weekendTextStyle: TextStyle(color: AppTheme.textPrimaryColor),
                         holidayTextStyle: TextStyle(color: AppTheme.textPrimaryColor),
-                        markerDecoration: BoxDecoration(
-                          color: AppTheme.successColor,
-                          shape: BoxShape.circle,
-                        ),
+                        // 移除默认的 markerDecoration，使用自定义的 builder
                       ),
                       headerStyle: HeaderStyle(
                         formatButtonVisible: false,
@@ -342,6 +747,33 @@ class _HabitDetailScreenState extends State<HabitDetailScreen> {
             ),
           ],
         ),
+      ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRepeatCountMarker(int repeatCount) {
+    // 根据重复次数计算颜色深度，增加透明度以便看清数字
+    double opacity;
+    if (repeatCount == 1) {
+      opacity = 0.15;
+    } else if (repeatCount == 2) {
+      opacity = 0.25;
+    } else if (repeatCount <= 5) {
+      opacity = 0.35;
+    } else if (repeatCount <= 10) {
+      opacity = 0.45;
+    } else {
+      opacity = 0.55;
+    }
+
+    return Container(
+      width: 28,
+      height: 28,
+      decoration: BoxDecoration(
+        color: AppTheme.successColor.withOpacity(opacity),
+        shape: BoxShape.circle,
       ),
     );
   }

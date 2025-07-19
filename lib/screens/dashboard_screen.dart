@@ -48,27 +48,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   SliverAppBar(
                     backgroundColor: AppTheme.backgroundColor,
                     elevation: 0,
-                    expandedHeight: 120,
+                    expandedHeight: 140,
                     floating: true,
                     pinned: true,
                     flexibleSpace: FlexibleSpaceBar(
                       background: Padding(
-                        padding: const EdgeInsets.fromLTRB(24, 60, 24, 16),
+                        padding: const EdgeInsets.fromLTRB(24, 70, 24, 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
-                              settingsProvider.getGreeting(),
-                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.textPrimaryColor,
+                            Flexible(
+                              child: Text(
+                                settingsProvider.getGreeting(),
+                                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textPrimaryColor,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             const SizedBox(height: 4),
-                            Text(
-                              settingsProvider.getMotivationalMessage(),
-                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppTheme.textSecondaryColor,
+                            Flexible(
+                              child: Text(
+                                settingsProvider.getMotivationalMessage(),
+                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  color: AppTheme.textSecondaryColor,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
                               ),
                             ),
                           ],
@@ -95,6 +103,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             completedToday: habitProvider.completedTodayHabits.length,
                             totalHabits: habitProvider.totalActiveHabits,
                             completionRate: habitProvider.todayCompletionRate,
+                            todayRepeatCount: habitProvider.todayTotalRepeatCount,
                           ),
                           const SizedBox(height: 24),
                         ],
@@ -162,9 +171,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   AppRouter.habitDetail,
                                   arguments: habit,
                                 );
-                              },
-                              onToggleComplete: () {
-                                habitProvider.toggleHabitCompletion(habit.id);
                               },
                             ),
                           );

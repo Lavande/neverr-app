@@ -5,12 +5,14 @@ class StatsCard extends StatelessWidget {
   final int completedToday;
   final int totalHabits;
   final double completionRate;
+  final int todayRepeatCount;
 
   const StatsCard({
     super.key,
     required this.completedToday,
     required this.totalHabits,
     required this.completionRate,
+    required this.todayRepeatCount,
   });
 
   @override
@@ -63,35 +65,28 @@ class StatsCard extends StatelessWidget {
                   width: 80,
                   height: 80,
                   child: Stack(
+                    alignment: Alignment.center,
                     children: [
-                      // Background circle
-                      Container(
+                      // Progress circle
+                      SizedBox(
                         width: 80,
                         height: 80,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey.shade100,
-                        ),
-                      ),
-                      
-                      // Progress circle
-                      CircularProgressIndicator(
-                        value: completionRate,
-                        strokeWidth: 8,
-                        backgroundColor: Colors.grey.shade100,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          _getCompletionColor(),
+                        child: CircularProgressIndicator(
+                          value: completionRate,
+                          strokeWidth: 8,
+                          backgroundColor: Colors.grey.shade200,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            _getCompletionColor(),
+                          ),
                         ),
                       ),
                       
                       // Center text
-                      Center(
-                        child: Text(
-                          '${(completionRate * 100).round()}%',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.textPrimaryColor,
-                          ),
+                      Text(
+                        '${(completionRate * 100).round()}%',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textPrimaryColor,
                         ),
                       ),
                     ],
@@ -113,10 +108,10 @@ class StatsCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       _buildStatItem(
-                        '总计',
-                        '$totalHabits',
+                        '重复次数',
+                        '$todayRepeatCount',
                         AppTheme.primaryColor,
-                        Icons.apps,
+                        Icons.refresh,
                       ),
                       const SizedBox(height: 8),
                       _buildStatItem(

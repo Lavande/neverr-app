@@ -1,5 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'dart:convert';
 import '../../models/habit_item.dart';
 
 class StorageService {
@@ -16,7 +17,7 @@ class StorageService {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE $_tableName (
@@ -27,9 +28,17 @@ class StorageService {
             audioPath TEXT,
             createdAt TEXT NOT NULL,
             completedDates TEXT NOT NULL,
-            isActive INTEGER NOT NULL DEFAULT 1
+            isActive INTEGER NOT NULL DEFAULT 1,
+            todayRepeatCount INTEGER NOT NULL DEFAULT 0,
+            dailyRepeatCounts TEXT NOT NULL DEFAULT '{}'
           )
         ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute('ALTER TABLE $_tableName ADD COLUMN todayRepeatCount INTEGER NOT NULL DEFAULT 0');
+          await db.execute('ALTER TABLE $_tableName ADD COLUMN dailyRepeatCounts TEXT NOT NULL DEFAULT \'{}\'');
+        }
       },
     );
   }
@@ -58,6 +67,14 @@ class StorageService {
           : completedDatesString.split(',');
       map['completedDates'] = dateStrings;
       
+      // Parse dailyRepeatCounts from JSON string
+      final dailyRepeatCountsString = map['dailyRepeatCounts'] as String? ?? '{}';
+      try {
+        map['dailyRepeatCounts'] = json.decode(dailyRepeatCountsString);
+      } catch (e) {
+        map['dailyRepeatCounts'] = <String, int>{};
+      }
+      
       return HabitItem.fromMap(map);
     });
   }
@@ -78,6 +95,14 @@ class StorageService {
           : completedDatesString.split(',');
       map['completedDates'] = dateStrings;
       
+      // Parse dailyRepeatCounts from JSON string
+      final dailyRepeatCountsString = map['dailyRepeatCounts'] as String? ?? '{}';
+      try {
+        map['dailyRepeatCounts'] = json.decode(dailyRepeatCountsString);
+      } catch (e) {
+        map['dailyRepeatCounts'] = <String, int>{};
+      }
+      
       return HabitItem.fromMap(map);
     }
     return null;
@@ -89,6 +114,9 @@ class StorageService {
     final completedDatesString = (map['completedDates'] as List<String>).join(',');
     map['completedDates'] = completedDatesString;
     
+    // Convert dailyRepeatCounts to JSON string
+    map['dailyRepeatCounts'] = json.encode(map['dailyRepeatCounts']);
+    
     await database.insert(_tableName, map);
   }
 
@@ -97,6 +125,9 @@ class StorageService {
     // Convert completedDates to JSON string
     final completedDatesString = (map['completedDates'] as List<String>).join(',');
     map['completedDates'] = completedDatesString;
+    
+    // Convert dailyRepeatCounts to JSON string
+    map['dailyRepeatCounts'] = json.encode(map['dailyRepeatCounts']);
     
     await database.update(
       _tableName,
@@ -150,6 +181,15 @@ class StorageService {
       final updatedHabit = habit.copyWith(completedDates: completedDates);
       await updateHabit(updatedHabit);
     }
+  }
+
+  static Future<void> resetTodayRepeatCounts() async {
+    await database.update(
+      _tableName,
+      {'todayRepeatCount': 0},
+      where: 'isActive = ?',
+      whereArgs: [1],
+    );
   }
 
   static Future<void> clearAllData() async {

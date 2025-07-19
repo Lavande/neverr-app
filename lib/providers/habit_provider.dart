@@ -127,6 +127,10 @@ class HabitProvider with ChangeNotifier {
 
   int get totalActiveHabits => activeHabits.length;
 
+  int get todayTotalRepeatCount {
+    return _habits.fold(0, (sum, habit) => sum + habit.todayRepeatCount);
+  }
+
   Map<String, int> get weeklyStats {
     final Map<String, int> stats = {};
     final now = DateTime.now();

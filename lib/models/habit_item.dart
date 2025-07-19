@@ -9,6 +9,8 @@ class HabitItem {
   final DateTime createdAt;
   final List<DateTime> completedDates;
   final bool isActive;
+  final int todayRepeatCount;
+  final Map<String, int> dailyRepeatCounts; // 存储每日重复次数，key为日期字符串
 
   HabitItem({
     String? id,
@@ -19,9 +21,12 @@ class HabitItem {
     DateTime? createdAt,
     List<DateTime>? completedDates,
     this.isActive = true,
+    this.todayRepeatCount = 0,
+    Map<String, int>? dailyRepeatCounts,
   })  : id = id ?? const Uuid().v4(),
         createdAt = createdAt ?? DateTime.now(),
-        completedDates = completedDates ?? [];
+        completedDates = completedDates ?? [],
+        dailyRepeatCounts = dailyRepeatCounts ?? {};
 
   HabitItem copyWith({
     String? id,
@@ -32,6 +37,8 @@ class HabitItem {
     DateTime? createdAt,
     List<DateTime>? completedDates,
     bool? isActive,
+    int? todayRepeatCount,
+    Map<String, int>? dailyRepeatCounts,
   }) {
     return HabitItem(
       id: id ?? this.id,
@@ -42,6 +49,8 @@ class HabitItem {
       createdAt: createdAt ?? this.createdAt,
       completedDates: completedDates ?? this.completedDates,
       isActive: isActive ?? this.isActive,
+      todayRepeatCount: todayRepeatCount ?? this.todayRepeatCount,
+      dailyRepeatCounts: dailyRepeatCounts ?? this.dailyRepeatCounts,
     );
   }
 
@@ -55,10 +64,19 @@ class HabitItem {
       'createdAt': createdAt.toIso8601String(),
       'completedDates': completedDates.map((date) => date.toIso8601String()).toList(),
       'isActive': isActive ? 1 : 0,
+      'todayRepeatCount': todayRepeatCount,
+      'dailyRepeatCounts': dailyRepeatCounts,
     };
   }
 
   factory HabitItem.fromMap(Map<String, dynamic> map) {
+    final dailyRepeatCounts = Map<String, int>.from(map['dailyRepeatCounts'] ?? {});
+    
+    // Calculate today's repeat count from dailyRepeatCounts
+    final today = DateTime.now();
+    final todayKey = '${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}';
+    final todayRepeatCount = dailyRepeatCounts[todayKey] ?? 0;
+    
     return HabitItem(
       id: map['id'],
       title: map['title'],
@@ -70,16 +88,13 @@ class HabitItem {
           ?.map((date) => DateTime.parse(date))
           .toList() ?? [],
       isActive: map['isActive'] == 1,
+      todayRepeatCount: todayRepeatCount,
+      dailyRepeatCounts: dailyRepeatCounts,
     );
   }
 
   bool get isCompletedToday {
-    final today = DateTime.now();
-    return completedDates.any((date) => 
-      date.year == today.year && 
-      date.month == today.month && 
-      date.day == today.day
-    );
+    return todayRepeatCount >= 1;
   }
 
   int get currentStreak {
@@ -117,6 +132,11 @@ class HabitItem {
     
     final daysSinceCreation = DateTime.now().difference(createdAt).inDays + 1;
     return (completedDates.length / daysSinceCreation).clamp(0.0, 1.0);
+  }
+
+  int getRepeatCountForDate(DateTime date) {
+    final dateKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    return dailyRepeatCounts[dateKey] ?? 0;
   }
 
   @override
