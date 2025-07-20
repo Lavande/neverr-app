@@ -12,7 +12,9 @@ class AppSettingsProvider with ChangeNotifier {
   
   // Convenience getters
   bool get notificationsEnabled => _settings.notificationsEnabled;
-  TimeOfDay get reminderTime => _settings.reminderTime;
+  TimeOfDay get reminderStartTime => _settings.reminderStartTime;
+  TimeOfDay get reminderEndTime => _settings.reminderEndTime;
+  int get reminderIntervalMinutes => _settings.reminderIntervalMinutes;
   String get language => _settings.language;
   ThemeMode get themeMode => _settings.themeMode;
   bool get isFirstLaunch => _settings.isFirstLaunch;
@@ -30,10 +32,15 @@ class AppSettingsProvider with ChangeNotifier {
       
       _settings = AppSettings(
         notificationsEnabled: prefs.getBool('notifications_enabled') ?? true,
-        reminderTime: TimeOfDay(
-          hour: prefs.getInt('reminder_hour') ?? 9,
-          minute: prefs.getInt('reminder_minute') ?? 0,
+        reminderStartTime: TimeOfDay(
+          hour: prefs.getInt('reminder_start_hour') ?? 9,
+          minute: prefs.getInt('reminder_start_minute') ?? 0,
         ),
+        reminderEndTime: TimeOfDay(
+          hour: prefs.getInt('reminder_end_hour') ?? 21,
+          minute: prefs.getInt('reminder_end_minute') ?? 0,
+        ),
+        reminderIntervalMinutes: prefs.getInt('reminder_interval_minutes') ?? 30,
         language: prefs.getString('language') ?? 'zh',
         themeMode: ThemeMode.values[prefs.getInt('theme_mode') ?? 0],
         isFirstLaunch: prefs.getBool('is_first_launch') ?? true,
@@ -49,8 +56,11 @@ class AppSettingsProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       
       await prefs.setBool('notifications_enabled', _settings.notificationsEnabled);
-      await prefs.setInt('reminder_hour', _settings.reminderTime.hour);
-      await prefs.setInt('reminder_minute', _settings.reminderTime.minute);
+      await prefs.setInt('reminder_start_hour', _settings.reminderStartTime.hour);
+      await prefs.setInt('reminder_start_minute', _settings.reminderStartTime.minute);
+      await prefs.setInt('reminder_end_hour', _settings.reminderEndTime.hour);
+      await prefs.setInt('reminder_end_minute', _settings.reminderEndTime.minute);
+      await prefs.setInt('reminder_interval_minutes', _settings.reminderIntervalMinutes);
       await prefs.setString('language', _settings.language);
       await prefs.setInt('theme_mode', _settings.themeMode.index);
       await prefs.setBool('is_first_launch', _settings.isFirstLaunch);
@@ -65,20 +75,42 @@ class AppSettingsProvider with ChangeNotifier {
     await _saveSettings();
     
     if (enabled) {
-      await _scheduleNotification();
+      await _scheduleNotifications();
     } else {
-      await NotificationService.cancelDailyReminder();
+      await NotificationService.cancelAllReminders();
     }
     
     notifyListeners();
   }
 
-  Future<void> updateReminderTime(TimeOfDay time) async {
-    _settings = _settings.copyWith(reminderTime: time);
+  Future<void> updateReminderStartTime(TimeOfDay time) async {
+    _settings = _settings.copyWith(reminderStartTime: time);
     await _saveSettings();
     
     if (_settings.notificationsEnabled) {
-      await _scheduleNotification();
+      await _scheduleNotifications();
+    }
+    
+    notifyListeners();
+  }
+
+  Future<void> updateReminderEndTime(TimeOfDay time) async {
+    _settings = _settings.copyWith(reminderEndTime: time);
+    await _saveSettings();
+    
+    if (_settings.notificationsEnabled) {
+      await _scheduleNotifications();
+    }
+    
+    notifyListeners();
+  }
+
+  Future<void> updateReminderIntervalMinutes(int intervalMinutes) async {
+    _settings = _settings.copyWith(reminderIntervalMinutes: intervalMinutes);
+    await _saveSettings();
+    
+    if (_settings.notificationsEnabled) {
+      await _scheduleNotifications();
     }
     
     notifyListeners();
@@ -117,9 +149,11 @@ class AppSettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _scheduleNotification() async {
-    await NotificationService.scheduleDailyReminder(
-      time: _settings.reminderTime,
+  Future<void> _scheduleNotifications() async {
+    await NotificationService.scheduleIntervalReminders(
+      startTime: _settings.reminderStartTime,
+      endTime: _settings.reminderEndTime,
+      intervalMinutes: _settings.reminderIntervalMinutes,
       title: 'Neverr 提醒',
       body: '该进行今日的习惯练习了！',
     );
@@ -129,7 +163,7 @@ class AppSettingsProvider with ChangeNotifier {
     if (_settings.notificationsEnabled) {
       final hasPermission = await NotificationService.requestPermission();
       if (hasPermission) {
-        await _scheduleNotification();
+        await _scheduleNotifications();
       } else {
         await updateNotificationsEnabled(false);
       }

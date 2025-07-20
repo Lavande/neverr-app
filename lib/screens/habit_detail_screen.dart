@@ -698,18 +698,8 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                                   '${day.day}',
                                   style: TextStyle(
                                     color: AppTheme.primaryColor,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Positioned(
-                                  bottom: 2,
-                                  child: Container(
-                                    width: 4,
-                                    height: 4,
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.primaryColor,
-                                      shape: BoxShape.circle,
-                                    ),
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 16,
                                   ),
                                 ),
                               ],
@@ -722,6 +712,8 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                         weekendTextStyle: TextStyle(color: AppTheme.textPrimaryColor),
                         holidayTextStyle: TextStyle(color: AppTheme.textPrimaryColor),
                         // 移除默认的 markerDecoration，使用自定义的 builder
+                        markersMaxCount: 0, // 禁用默认标记点
+                        markerDecoration: BoxDecoration(), // 清空默认标记装饰
                       ),
                       headerStyle: HeaderStyle(
                         formatButtonVisible: false,

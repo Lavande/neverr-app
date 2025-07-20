@@ -85,8 +85,92 @@ class NotificationService {
     );
   }
 
+  static Future<void> scheduleIntervalReminders({
+    required TimeOfDay startTime,
+    required TimeOfDay endTime,
+    required int intervalMinutes,
+    required String title,
+    required String body,
+  }) async {
+    // Cancel all existing reminders first
+    await cancelAllReminders();
+
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      'interval_reminder',
+      'Interval Reminder',
+      channelDescription: 'Interval reminders for habit practice',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    const DarwinNotificationDetails iosNotificationDetails =
+        DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: iosNotificationDetails,
+    );
+
+    // Calculate all reminder times within the interval
+    final reminderTimes = _calculateReminderTimes(startTime, endTime, intervalMinutes);
+    
+    int notificationId = 1000; // Start with a base ID for interval reminders
+    
+    for (final reminderTime in reminderTimes) {
+      await _notificationsPlugin.zonedSchedule(
+        notificationId++,
+        title,
+        body,
+        _nextInstanceOfTime(reminderTime),
+        notificationDetails,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+    }
+  }
+
+  static List<TimeOfDay> _calculateReminderTimes(
+    TimeOfDay startTime,
+    TimeOfDay endTime,
+    int intervalMinutes,
+  ) {
+    final List<TimeOfDay> reminderTimes = [];
+    
+    // Convert to minutes for easier calculation
+    int startMinutes = startTime.hour * 60 + startTime.minute;
+    int endMinutes = endTime.hour * 60 + endTime.minute;
+    
+    // Handle case where end time is next day (e.g., 23:00 to 01:00)
+    if (endMinutes <= startMinutes) {
+      endMinutes += 24 * 60; // Add 24 hours
+    }
+    
+    int currentMinutes = startMinutes;
+    
+    while (currentMinutes <= endMinutes) {
+      int hours = (currentMinutes ~/ 60) % 24;
+      int minutes = currentMinutes % 60;
+      
+      reminderTimes.add(TimeOfDay(hour: hours, minute: minutes));
+      currentMinutes += intervalMinutes;
+    }
+    
+    return reminderTimes;
+  }
+
   static Future<void> cancelDailyReminder() async {
     await _notificationsPlugin.cancel(0);
+  }
+
+  static Future<void> cancelAllReminders() async {
+    await _notificationsPlugin.cancelAll();
   }
 
   static Future<void> showInstantNotification({

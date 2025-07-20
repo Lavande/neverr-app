@@ -34,14 +34,24 @@ class SettingsScreen extends StatelessWidget {
                       settings.notificationsEnabled,
                       (value) => settings.updateNotificationsEnabled(value),
                     ),
-                    if (settings.notificationsEnabled)
-                      _buildTimeTile(
+                    if (settings.notificationsEnabled) ...[
+                      _buildReminderTimeRangeTile(
                         context,
-                        '提醒时间',
-                        '每日提醒时间',
-                        settings.reminderTime,
-                        (time) => settings.updateReminderTime(time),
+                        '提醒时间区间',
+                        '设置提醒的开始和结束时间',
+                        settings.reminderStartTime,
+                        settings.reminderEndTime,
+                        (startTime) => settings.updateReminderStartTime(startTime),
+                        (endTime) => settings.updateReminderEndTime(endTime),
                       ),
+                      _buildReminderIntervalTile(
+                        context,
+                        '提醒间隔',
+                        '设置提醒的频率',
+                        settings.reminderIntervalMinutes,
+                        (intervalMinutes) => settings.updateReminderIntervalMinutes(intervalMinutes),
+                      ),
+                    ],
                   ],
                 ),
                 
@@ -193,24 +203,65 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTimeTile(
+  Widget _buildReminderTimeRangeTile(
     BuildContext context,
     String title,
     String subtitle,
+    TimeOfDay startTime,
+    TimeOfDay endTime,
+    ValueChanged<TimeOfDay> onStartTimeChanged,
+    ValueChanged<TimeOfDay> onEndTimeChanged,
+  ) {
+    return Column(
+      children: [
+        ListTile(
+          title: Text(title),
+          subtitle: Text(subtitle),
+          trailing: Text(
+            '${startTime.format(context)} - ${endTime.format(context)}',
+            style: TextStyle(
+              color: AppTheme.primaryColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: _buildTimeButton(
+                  context,
+                  '开始时间',
+                  startTime,
+                  onStartTimeChanged,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildTimeButton(
+                  context,
+                  '结束时间',
+                  endTime,
+                  onEndTimeChanged,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _buildTimeButton(
+    BuildContext context,
+    String label,
     TimeOfDay time,
     ValueChanged<TimeOfDay> onChanged,
   ) {
-    return ListTile(
-      title: Text(title),
-      subtitle: Text(subtitle),
-      trailing: Text(
-        time.format(context),
-        style: TextStyle(
-          color: AppTheme.primaryColor,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      onTap: () async {
+    return OutlinedButton(
+      onPressed: () async {
         final newTime = await showTimePicker(
           context: context,
           initialTime: time,
@@ -219,6 +270,61 @@ class SettingsScreen extends StatelessWidget {
           onChanged(newTime);
         }
       },
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        side: BorderSide(color: AppTheme.primaryColor),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: AppTheme.textSecondaryColor,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            time.format(context),
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: AppTheme.primaryColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReminderIntervalTile(
+    BuildContext context,
+    String title,
+    String subtitle,
+    int intervalMinutes,
+    ValueChanged<int> onIntervalMinutesChanged,
+  ) {
+    return ListTile(
+      title: Text(title),
+      subtitle: Text(subtitle),
+      trailing: DropdownButton<int>(
+        value: intervalMinutes,
+        dropdownColor: AppTheme.surfaceColor,
+        items: [
+          DropdownMenuItem(value: 15, child: const Text('每15分钟')),
+          DropdownMenuItem(value: 30, child: const Text('每30分钟')),
+          DropdownMenuItem(value: 60, child: const Text('每1小时')),
+          DropdownMenuItem(value: 120, child: const Text('每2小时')),
+          DropdownMenuItem(value: 180, child: const Text('每3小时')),
+          DropdownMenuItem(value: 240, child: const Text('每4小时')),
+        ],
+        onChanged: (newValue) {
+          if (newValue != null) {
+            onIntervalMinutesChanged(newValue);
+          }
+        },
+        underline: Container(),
+      ),
     );
   }
 
@@ -235,6 +341,7 @@ class SettingsScreen extends StatelessWidget {
       subtitle: Text(subtitle),
       trailing: DropdownButton<T>(
         value: value,
+        dropdownColor: AppTheme.surfaceColor,
         items: options.entries.map((entry) {
           return DropdownMenuItem<T>(
             value: entry.key,

@@ -75,6 +75,60 @@ class AppTheme {
         ),
         color: surfaceColor,
       ),
+      // 下拉菜单主题
+      dropdownMenuTheme: DropdownMenuThemeData(
+        menuStyle: MenuStyle(
+          backgroundColor: WidgetStateProperty.all(surfaceColor),
+          elevation: WidgetStateProperty.all(4),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ),
+      // 弹出菜单主题
+      popupMenuTheme: PopupMenuThemeData(
+        color: surfaceColor,
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        textStyle: const TextStyle(
+          color: textPrimaryColor,
+          fontSize: 14,
+        ),
+      ),
+      // 对话框主题
+      dialogTheme: DialogTheme(
+        backgroundColor: surfaceColor,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        titleTextStyle: const TextStyle(
+          color: textPrimaryColor,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+        contentTextStyle: const TextStyle(
+          color: textPrimaryColor,
+          fontSize: 16,
+        ),
+      ),
+      // 菜单主题
+      menuTheme: MenuThemeData(
+        style: MenuStyle(
+          backgroundColor: WidgetStateProperty.all(surfaceColor),
+          elevation: WidgetStateProperty.all(4),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ),
+
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -185,6 +239,60 @@ class AppTheme {
         ),
         color: const Color(0xFF2D3748),
       ),
+      // 暗色主题下的下拉菜单主题
+      dropdownMenuTheme: DropdownMenuThemeData(
+        menuStyle: MenuStyle(
+          backgroundColor: WidgetStateProperty.all(const Color(0xFF2D3748)),
+          elevation: WidgetStateProperty.all(4),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ),
+      // 暗色主题下的弹出菜单主题
+      popupMenuTheme: PopupMenuThemeData(
+        color: const Color(0xFF2D3748),
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        textStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+        ),
+      ),
+      // 暗色主题下的对话框主题
+      dialogTheme: DialogTheme(
+        backgroundColor: const Color(0xFF2D3748),
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        titleTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+        contentTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+        ),
+      ),
+      // 暗色主题下的菜单主题
+      menuTheme: MenuThemeData(
+        style: MenuStyle(
+          backgroundColor: WidgetStateProperty.all(const Color(0xFF2D3748)),
+          elevation: WidgetStateProperty.all(4),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ),
+
       textTheme: const TextTheme(
         displayLarge: TextStyle(
           fontSize: 32,
