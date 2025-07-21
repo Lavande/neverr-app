@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/theme/app_theme.dart';
 import '../providers/app_settings_provider.dart';
+import '../providers/habit_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -10,18 +11,25 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('设置'),
-        backgroundColor: AppTheme.backgroundColor,
-        elevation: 0,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
-        child: Consumer<AppSettingsProvider>(
-          builder: (context, settings, child) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Consumer<AppSettingsProvider>(
+            builder: (context, settings, child) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Page title
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
+                    child: Text(
+                      '设置',
+                      style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimaryColor,
+                      ),
+                    ),
+                  ),
                 // Notifications section
                 _buildSection(
                   context,
@@ -57,27 +65,6 @@ class SettingsScreen extends StatelessWidget {
                 
                 const SizedBox(height: 24),
                 
-                // Theme section
-                _buildSection(
-                  context,
-                  '外观设置',
-                  [
-                    _buildDropdownTile(
-                      context,
-                      '主题模式',
-                      '选择应用主题',
-                      settings.themeMode,
-                      {
-                        ThemeMode.system: '跟随系统',
-                        ThemeMode.light: '浅色模式',
-                        ThemeMode.dark: '深色模式',
-                      },
-                      (value) => settings.updateThemeMode(value),
-                    ),
-                  ],
-                ),
-                
-                const SizedBox(height: 24),
                 
                 // Language section
                 _buildSection(
@@ -108,7 +95,7 @@ class SettingsScreen extends StatelessWidget {
                     _buildActionTile(
                       context,
                       '关于 Neverr',
-                      'Not just quitting. Becoming better.',
+                      '不止是戒掉，而是变更好。',
                       Icons.info_outline,
                       () => _showAboutDialog(context),
                     ),
@@ -153,8 +140,9 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
               ],
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
@@ -198,7 +186,6 @@ class SettingsScreen extends StatelessWidget {
       trailing: Switch(
         value: value,
         onChanged: onChanged,
-        activeColor: AppTheme.primaryColor,
       ),
     );
   }
@@ -399,7 +386,7 @@ class SettingsScreen extends StatelessWidget {
             SizedBox(height: 8),
             Text('Neverr 是一款帮助你改变习惯的应用，通过录制和重复播放自己的声音来重塑潜意识。'),
             SizedBox(height: 16),
-            Text('灵感来源于关于潜意识和习惯改变的研究。'),
+            Text('基于潜意识和习惯改变的研究，灵感来自李笑来的经验分享文章。'),
           ],
         ),
         actions: [
@@ -424,12 +411,21 @@ class SettingsScreen extends StatelessWidget {
             child: const Text('取消'),
           ),
           TextButton(
-            onPressed: () {
-              settings.resetSettings();
-              Navigator.of(context).pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('设置已重置')),
-              );
+            onPressed: () async {
+              await settings.resetSettings();
+              
+              // 重新加载习惯数据
+              if (context.mounted) {
+                final habitProvider = Provider.of<HabitProvider>(context, listen: false);
+                await habitProvider.loadHabits();
+              }
+              
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('设置已重置')),
+                );
+              }
             },
             child: const Text('确定'),
           ),

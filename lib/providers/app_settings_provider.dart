@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/app_settings.dart';
 import '../core/services/notification_service.dart';
+import '../core/services/storage_service.dart';
 
 class AppSettingsProvider with ChangeNotifier {
   AppSettings _settings = const AppSettings();
@@ -144,8 +145,17 @@ class AppSettingsProvider with ChangeNotifier {
   }
 
   Future<void> resetSettings() async {
+    // 重置设置数据
     _settings = const AppSettings();
     await _saveSettings();
+    
+    // 清除所有习惯数据
+    try {
+      await StorageService.clearAllData();
+    } catch (e) {
+      debugPrint('Error clearing habit data: $e');
+    }
+    
     notifyListeners();
   }
 

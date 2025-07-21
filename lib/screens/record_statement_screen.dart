@@ -204,7 +204,7 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
       
       if (mounted) {
         Navigator.of(context).pushNamedAndRemoveUntil(
-          AppRouter.dashboard,
+          AppRouter.mainNavigation,
           (route) => false,
         );
       }

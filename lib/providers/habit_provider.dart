@@ -155,4 +155,37 @@ class HabitProvider with ChangeNotifier {
   Future<void> refreshHabits() async {
     await loadHabits();
   }
+
+  /// 获取所有习惯的最早创建日期
+  DateTime? get earliestHabitDate {
+    if (_habits.isEmpty) return null;
+    return _habits.map((habit) => habit.createdAt).reduce((a, b) => a.isBefore(b) ? a : b);
+  }
+
+  /// 获取指定日期所有习惯的总重复次数
+  int getTotalRepeatCountForDate(DateTime date) {
+    int totalCount = 0;
+    final dateKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    
+    for (final habit in _habits) {
+      totalCount += habit.dailyRepeatCounts[dateKey] ?? 0;
+    }
+    
+    return totalCount;
+  }
+
+  /// 获取指定日期各个习惯的重复次数详情
+  Map<String, int> getHabitDetailsForDate(DateTime date) {
+    final Map<String, int> details = {};
+    final dateKey = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    
+    for (final habit in _habits) {
+      final count = habit.dailyRepeatCounts[dateKey] ?? 0;
+      if (count > 0) {
+        details[habit.title] = count;
+      }
+    }
+    
+    return details;
+  }
 }

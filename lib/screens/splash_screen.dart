@@ -72,7 +72,7 @@ class _SplashScreenState extends State<SplashScreen>
     final settings = Provider.of<AppSettingsProvider>(context, listen: false);
     
     if (settings.onboardingCompleted) {
-      Navigator.of(context).pushReplacementNamed(AppRouter.dashboard);
+      Navigator.of(context).pushReplacementNamed(AppRouter.mainNavigation);
     } else {
       Navigator.of(context).pushReplacementNamed(AppRouter.onboarding);
     }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart';
 import '../core/router/app_router.dart';
-import '../core/services/deepseek_service.dart';
 import '../models/habit_category.dart';
 
 class CreateGoalScreen extends StatefulWidget {
@@ -15,7 +14,6 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   final TextEditingController _customHabitController = TextEditingController();
   final TextEditingController _statementController = TextEditingController();
   HabitCategory? _selectedCategory;
-  bool _isLoadingStatement = false;
   bool _isCustomHabit = false;
 
   @override
@@ -25,38 +23,26 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     super.dispose();
   }
 
-  Future<void> _generateStatement() async {
-    if (_selectedCategory == null && _customHabitController.text.trim().isEmpty) {
-      return;
-    }
-
-    setState(() {
-      _isLoadingStatement = true;
-    });
-
-    try {
-      final habitKeyword = _selectedCategory?.name ?? _customHabitController.text.trim();
-      final isPositiveHabit = HabitCategory.positiveHabits.contains(_selectedCategory);
-      
-      final statement = await DeepSeekService.generateHabitStatement(
-        habitKeyword: habitKeyword,
-        isPositive: isPositiveHabit,
-      );
-
-      _statementController.text = statement;
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('生成语句失败: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
+  void _generateStatement() {
+    if (_selectedCategory != null) {
+      // 对于预设分类，使用第一个预设语句
       setState(() {
-        _isLoadingStatement = false;
+        _statementController.text = _selectedCategory!.suggestions.first;
       });
+    }
+  }
+
+  bool _isReadyToProceed() {
+    // 检查是否有语句内容
+    if (_statementController.text.trim().isEmpty) {
+      return false;
+    }
+    
+    // 检查是否有习惯选择或自定义输入
+    if (_isCustomHabit) {
+      return _customHabitController.text.trim().isNotEmpty;
+    } else {
+      return _selectedCategory != null;
     }
   }
 
@@ -152,16 +138,16 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                 width: double.infinity,
                 child: Container(
                   decoration: BoxDecoration(
-                    gradient: _statementController.text.trim().isNotEmpty
+                    gradient: _isReadyToProceed()
                         ? AppTheme.primaryGradient
                         : null,
-                    color: _statementController.text.trim().isEmpty
+                    color: !_isReadyToProceed()
                         ? Colors.grey.shade300
                         : null,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ElevatedButton(
-                    onPressed: _statementController.text.trim().isNotEmpty
+                    onPressed: _isReadyToProceed()
                         ? _proceedToRecording
                         : null,
                     style: ElevatedButton.styleFrom(
@@ -238,28 +224,12 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             ),
           ),
           onChanged: (value) {
-            if (value.isNotEmpty) {
-              setState(() {
+            setState(() {
+              if (value.isNotEmpty) {
                 _selectedCategory = null;
-              });
-            }
+              }
+            });
           },
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton(
-            onPressed: _customHabitController.text.trim().isNotEmpty && !_isLoadingStatement
-                ? _generateStatement
-                : null,
-            child: _isLoadingStatement
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('生成语句'),
-          ),
         ),
       ],
     );
@@ -310,7 +280,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: isSelected ? AppTheme.primaryColor.withOpacity(0.1) : Colors.white,
+              color: isSelected ? AppTheme.primaryColor.withValues(alpha: 0.1) : Colors.white,
               border: Border.all(
                 color: isSelected ? AppTheme.primaryColor : Colors.grey.shade300,
               ),
@@ -353,7 +323,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         TextField(
           controller: _statementController,
           decoration: InputDecoration(
-            hintText: '点击上方按钮生成语句，或直接输入自定义语句',
+            hintText: '请输入自我对话语句，或选择预设分类自动填入',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -363,12 +333,53 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             ),
           ),
           maxLines: 3,
+          onChanged: (value) {
+            setState(() {
+              // 触发按钮状态更新
+            });
+          },
         ),
         const SizedBox(height: 12),
-        Text(
-          '💡 提示：语句应该简洁、坚定且易于记忆。建议长度在20字以内。',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-            color: AppTheme.textSecondaryColor,
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryColor.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: AppTheme.primaryColor.withValues(alpha: 0.2),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.lightbulb_outlined,
+                    color: AppTheme.primaryColor,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '自我对话脚本框架',
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppTheme.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '自由陈述 + 加个理由 + 情绪标签',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  color: AppTheme.textPrimaryColor,
+                ),
+              ),
+            ],
           ),
         ),
       ],

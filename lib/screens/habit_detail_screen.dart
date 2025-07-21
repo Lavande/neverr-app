@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
 import '../core/theme/app_theme.dart';
 import '../core/services/audio_service.dart';
 import '../models/habit_item.dart';
@@ -23,7 +22,6 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
   final TextEditingController _statementController = TextEditingController();
   bool _isEditing = false;
   bool _isPlaying = false;
-  DateTime _selectedDay = DateTime.now();
   int _loopCount = 1;
   int _currentLoop = 0;
   bool _isLoopPlaying = false;
@@ -629,114 +627,6 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
               ),
             ),
             
-            const SizedBox(height: 24),
-            
-            // Calendar section
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '打卡日历',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textPrimaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    
-                    TableCalendar<DateTime>(
-                      firstDay: currentHabit.createdAt,
-                      lastDay: DateTime.now().add(const Duration(days: 365)),
-                      focusedDay: _selectedDay,
-                      calendarFormat: CalendarFormat.month,
-                      eventLoader: (day) {
-                        final repeatCount = currentHabit.getRepeatCountForDate(day);
-                        // 如果有重复次数，返回该日期作为事件
-                        return repeatCount > 0 ? [day] : [];
-                      },
-                      calendarBuilders: CalendarBuilders(
-                        defaultBuilder: (context, day, focusedDay) {
-                          final repeatCount = currentHabit.getRepeatCountForDate(day);
-                          if (repeatCount > 0) {
-                            return Container(
-                              margin: const EdgeInsets.all(4.0),
-                              alignment: Alignment.center,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  _buildRepeatCountMarker(repeatCount),
-                                  Text(
-                                    '${day.day}',
-                                    style: TextStyle(
-                                      color: AppTheme.textPrimaryColor,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                          return null;
-                        },
-                        todayBuilder: (context, day, focusedDay) {
-                          final repeatCount = currentHabit.getRepeatCountForDate(day);
-                          return Container(
-                            margin: const EdgeInsets.all(4.0),
-                            alignment: Alignment.center,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                if (repeatCount > 0) _buildRepeatCountMarker(repeatCount),
-                                Text(
-                                  '${day.day}',
-                                  style: TextStyle(
-                                    color: AppTheme.primaryColor,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      calendarStyle: CalendarStyle(
-                        outsideDaysVisible: false,
-                        weekendTextStyle: TextStyle(color: AppTheme.textPrimaryColor),
-                        holidayTextStyle: TextStyle(color: AppTheme.textPrimaryColor),
-                        // 移除默认的 markerDecoration，使用自定义的 builder
-                        markersMaxCount: 0, // 禁用默认标记点
-                        markerDecoration: BoxDecoration(), // 清空默认标记装饰
-                      ),
-                      headerStyle: HeaderStyle(
-                        formatButtonVisible: false,
-                        titleCentered: true,
-                        leftChevronIcon: Icon(
-                          Icons.chevron_left,
-                          color: AppTheme.primaryColor,
-                        ),
-                        rightChevronIcon: Icon(
-                          Icons.chevron_right,
-                          color: AppTheme.primaryColor,
-                        ),
-                      ),
-                      onDaySelected: (selectedDay, focusedDay) {
-                        setState(() {
-                          _selectedDay = selectedDay;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
           ],
         ),
       ),
@@ -745,30 +635,6 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
     );
   }
 
-  Widget _buildRepeatCountMarker(int repeatCount) {
-    // 根据重复次数计算颜色深度，增加透明度以便看清数字
-    double opacity;
-    if (repeatCount == 1) {
-      opacity = 0.15;
-    } else if (repeatCount == 2) {
-      opacity = 0.25;
-    } else if (repeatCount <= 5) {
-      opacity = 0.35;
-    } else if (repeatCount <= 10) {
-      opacity = 0.45;
-    } else {
-      opacity = 0.55;
-    }
-
-    return Container(
-      width: 28,
-      height: 28,
-      decoration: BoxDecoration(
-        color: AppTheme.successColor.withOpacity(opacity),
-        shape: BoxShape.circle,
-      ),
-    );
-  }
 
   Widget _buildStatItem(String label, String value, Color color, IconData icon) {
     return Column(

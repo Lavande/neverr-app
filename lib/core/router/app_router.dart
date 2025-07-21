@@ -4,6 +4,7 @@ import '../../screens/onboarding_screen.dart';
 import '../../screens/create_goal_screen.dart';
 import '../../screens/record_statement_screen.dart';
 import '../../screens/dashboard_screen.dart';
+import '../../screens/main_navigation_screen.dart';
 import '../../screens/habit_detail_screen.dart';
 import '../../screens/settings_screen.dart';
 import '../../models/habit_item.dart';
@@ -14,6 +15,7 @@ class AppRouter {
   static const String createGoal = '/create-goal';
   static const String recordStatement = '/record-statement';
   static const String dashboard = '/dashboard';
+  static const String mainNavigation = '/main-navigation';
   static const String habitDetail = '/habit-detail';
   static const String settings = '/settings';
 
@@ -40,6 +42,9 @@ class AppRouter {
       
       case dashboard:
         return MaterialPageRoute(builder: (_) => const DashboardScreen());
+      
+      case mainNavigation:
+        return MaterialPageRoute(builder: (_) => const MainNavigationScreen());
       
       case habitDetail:
         final habit = routeSettings.arguments as HabitItem;

@@ -28,18 +28,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HabitProvider()),
         ChangeNotifierProvider(create: (_) => AppSettingsProvider()),
       ],
-      child: Consumer<AppSettingsProvider>(
-        builder: (context, settings, child) {
-          return MaterialApp(
-            title: 'Neverr',
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: settings.themeMode,
-            onGenerateRoute: AppRouter.generateRoute,
-            initialRoute: AppRouter.splash,
-            debugShowCheckedModeBanner: false,
-          );
-        },
+      child: MaterialApp(
+        title: 'Neverr',
+        theme: AppTheme.lightTheme,
+        themeMode: ThemeMode.light,
+        onGenerateRoute: AppRouter.generateRoute,
+        initialRoute: AppRouter.splash,
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
