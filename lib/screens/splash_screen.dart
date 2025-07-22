@@ -106,13 +106,12 @@ class _SplashScreenState extends State<SplashScreen>
                 },
                 child: Column(
                   children: [
-                    // Logo placeholder - replace with actual logo
+                    // App logo
                     Container(
                       width: 120,
                       height: 120,
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryColor,
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(60),
                         boxShadow: [
                           BoxShadow(
                             color: AppTheme.primaryColor.withOpacity(0.3),
@@ -121,10 +120,14 @@ class _SplashScreenState extends State<SplashScreen>
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.self_improvement,
-                        color: Colors.white,
-                        size: 60,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(60),
+                        child: Image.asset(
+                          'assets/images/app_icon.png',
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 32),
@@ -141,7 +144,7 @@ class _SplashScreenState extends State<SplashScreen>
                     
                     // Slogan
                     Text(
-                      'Not just quitting. Becoming better.',
+                      '不止是戒掉，而是变更好。',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: AppTheme.textSecondaryColor,
                         fontWeight: FontWeight.w500,

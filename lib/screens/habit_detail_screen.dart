@@ -22,7 +22,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
   final TextEditingController _statementController = TextEditingController();
   bool _isEditing = false;
   bool _isPlaying = false;
-  int _loopCount = 1;
+  int _loopCount = 5;
   int _currentLoop = 0;
   bool _isLoopPlaying = false;
   late AnimationController _pulseController;
@@ -492,7 +492,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                               ),
                               const SizedBox(width: 8),
                               ...List.generate(3, (index) {
-                                final count = [1, 5, 10][index];
+                                final count = [5, 10, 15][index];
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 8),
                                   child: ChoiceChip(
