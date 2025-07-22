@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../core/theme/app_theme.dart';
 import '../core/router/app_router.dart';
 import '../providers/app_settings_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -15,38 +16,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<OnboardingPage> _pages = [
-    const OnboardingPage(
-      title: '你不是"戒掉"',
-      subtitle: '你是"从来不做"',
-      description: '不要说"我要戒烟"，而是告诉自己"我从来不吸烟"。这种心理暗示会让改变变得更容易。',
-      icon: Icons.psychology,
-      iconColor: AppTheme.primaryColor,
-    ),
-    const OnboardingPage(
-      title: '用自己的声音',
-      subtitle: '向大脑"明示"',
-      description: '录制自己的声音，大声说出改变的宣言。你的潜意识最信任你自己的声音。',
-      icon: Icons.mic,
-      iconColor: AppTheme.secondaryColor,
-    ),
-    const OnboardingPage(
-      title: '每天听一遍',
-      subtitle: '改变从此刻开始',
-      description: '每天播放一遍你的声音宣言，持续5秒以上。重复的力量会帮你重塑潜意识。',
-      icon: Icons.headphones,
-      iconColor: AppTheme.primaryColor,
-    ),
-  ];
-
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
 
+  List<OnboardingPage> _getPages(BuildContext context) {
+    return [
+      OnboardingPage(
+        title: AppLocalizations.of(context)!.onboardingTitle1,
+        subtitle: AppLocalizations.of(context)!.onboardingSubtitle1,
+        description: AppLocalizations.of(context)!.onboardingDescription1,
+        icon: Icons.psychology,
+        iconColor: AppTheme.primaryColor,
+      ),
+      OnboardingPage(
+        title: AppLocalizations.of(context)!.onboardingTitle2,
+        subtitle: AppLocalizations.of(context)!.onboardingSubtitle2,
+        description: AppLocalizations.of(context)!.onboardingDescription2,
+        icon: Icons.mic,
+        iconColor: AppTheme.secondaryColor,
+      ),
+      OnboardingPage(
+        title: AppLocalizations.of(context)!.onboardingTitle3,
+        subtitle: AppLocalizations.of(context)!.onboardingSubtitle3,
+        description: AppLocalizations.of(context)!.onboardingDescription3,
+        icon: Icons.headphones,
+        iconColor: AppTheme.primaryColor,
+      ),
+    ];
+  }
+
   void _nextPage() {
-    if (_currentPage < _pages.length - 1) {
+    final pages = _getPages(context);
+    if (_currentPage < pages.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -64,6 +68,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = _getPages(context);
+    
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
@@ -77,9 +83,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     _currentPage = index;
                   });
                 },
-                itemCount: _pages.length,
+                itemCount: pages.length,
                 itemBuilder: (context, index) {
-                  return _pages[index];
+                  return pages[index];
                 },
               ),
             ),
@@ -90,7 +96,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
-                  _pages.length,
+                  pages.length,
                   (index) => AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -125,7 +131,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                   ),
                   child: Text(
-                    _currentPage == _pages.length - 1 ? '开始使用' : '继续',
+                    _currentPage == pages.length - 1 ? AppLocalizations.of(context)!.getStarted : AppLocalizations.of(context)!.continueButton,
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
@@ -138,11 +144,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             const SizedBox(height: 24),
             
             // Skip button
-            if (_currentPage < _pages.length - 1)
+            if (_currentPage < pages.length - 1)
               TextButton(
                 onPressed: _completeOnboarding,
                 child: Text(
-                  '跳过',
+                  AppLocalizations.of(context)!.skip,
                   style: TextStyle(
                     color: AppTheme.textSecondaryColor,
                     fontSize: 16,
@@ -165,7 +171,7 @@ class OnboardingPage extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
 
-  const OnboardingPage({
+  OnboardingPage({
     super.key,
     required this.title,
     required this.subtitle,

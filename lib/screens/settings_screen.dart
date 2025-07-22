@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../core/theme/app_theme.dart';
 import '../providers/app_settings_provider.dart';
 import '../providers/habit_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -23,7 +24,7 @@ class SettingsScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 24),
                     child: Text(
-                      '设置',
+                      AppLocalizations.of(context)!.settings,
                       style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: AppTheme.textPrimaryColor,
@@ -33,20 +34,20 @@ class SettingsScreen extends StatelessWidget {
                 // Notifications section
                 _buildSection(
                   context,
-                  '通知设置',
+                  AppLocalizations.of(context)!.notificationSettings,
                   [
                     _buildSwitchTile(
                       context,
-                      '启用通知',
-                      '接收每日提醒通知',
+                      AppLocalizations.of(context)!.enableNotifications,
+                      AppLocalizations.of(context)!.enableNotificationsDescription,
                       settings.notificationsEnabled,
                       (value) => settings.updateNotificationsEnabled(value),
                     ),
                     if (settings.notificationsEnabled) ...[
                       _buildReminderTimeRangeTile(
                         context,
-                        '提醒时间区间',
-                        '设置提醒的开始和结束时间',
+                        AppLocalizations.of(context)!.reminderTimeRange,
+                        AppLocalizations.of(context)!.reminderTimeRangeDescription,
                         settings.reminderStartTime,
                         settings.reminderEndTime,
                         (startTime) => settings.updateReminderStartTime(startTime),
@@ -54,8 +55,8 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       _buildReminderIntervalTile(
                         context,
-                        '提醒间隔',
-                        '设置提醒的频率',
+                        AppLocalizations.of(context)!.reminderInterval,
+                        AppLocalizations.of(context)!.reminderIntervalDescription,
                         settings.reminderIntervalMinutes,
                         (intervalMinutes) => settings.updateReminderIntervalMinutes(intervalMinutes),
                       ),
@@ -69,12 +70,12 @@ class SettingsScreen extends StatelessWidget {
                 // Language section
                 _buildSection(
                   context,
-                  '语言设置',
+                  AppLocalizations.of(context)!.languageSettings,
                   [
                     _buildDropdownTile(
                       context,
-                      '语言',
-                      '选择应用语言',
+                      AppLocalizations.of(context)!.language,
+                      AppLocalizations.of(context)!.selectLanguage,
                       settings.language,
                       {
                         'zh': '中文',
@@ -90,19 +91,19 @@ class SettingsScreen extends StatelessWidget {
                 // About section
                 _buildSection(
                   context,
-                  '关于',
+                  AppLocalizations.of(context)!.about,
                   [
                     _buildActionTile(
                       context,
-                      '关于 Neverr',
-                      '不止是戒掉，而是变更好。',
+                      AppLocalizations.of(context)!.aboutNeverr,
+                      AppLocalizations.of(context)!.aboutNeverrDescription,
                       Icons.info_outline,
                       () => _showAboutDialog(context),
                     ),
                     _buildActionTile(
                       context,
-                      '版本信息',
-                      'v1.0.0',
+                      AppLocalizations.of(context)!.versionInfo,
+                      AppLocalizations.of(context)!.version,
                       Icons.smartphone,
                       () {},
                     ),
@@ -114,12 +115,12 @@ class SettingsScreen extends StatelessWidget {
                 // Danger zone
                 _buildSection(
                   context,
-                  '危险操作',
+                  AppLocalizations.of(context)!.dangerZone,
                   [
                     _buildActionTile(
                       context,
-                      '重置所有设置',
-                      '恢复到默认设置',
+                      AppLocalizations.of(context)!.resetAllSettings,
+                      AppLocalizations.of(context)!.resetToDefault,
                       Icons.restore,
                       () => _showResetDialog(context, settings),
                       isDestructive: true,
@@ -132,7 +133,7 @@ class SettingsScreen extends StatelessWidget {
                 // Footer
                 Center(
                   child: Text(
-                    '© 2024 Neverr App\nMade with ❤️ for better habits',
+                    AppLocalizations.of(context)!.footer,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: AppTheme.textSecondaryColor,
                     ),
@@ -219,7 +220,7 @@ class SettingsScreen extends StatelessWidget {
               Expanded(
                 child: _buildTimeButton(
                   context,
-                  '开始时间',
+                  AppLocalizations.of(context)!.startTime,
                   startTime,
                   onStartTimeChanged,
                 ),
@@ -228,7 +229,7 @@ class SettingsScreen extends StatelessWidget {
               Expanded(
                 child: _buildTimeButton(
                   context,
-                  '结束时间',
+                  AppLocalizations.of(context)!.endTime,
                   endTime,
                   onEndTimeChanged,
                 ),
@@ -298,12 +299,12 @@ class SettingsScreen extends StatelessWidget {
         value: intervalMinutes,
         dropdownColor: AppTheme.surfaceColor,
         items: [
-          DropdownMenuItem(value: 15, child: const Text('每15分钟')),
-          DropdownMenuItem(value: 30, child: const Text('每30分钟')),
-          DropdownMenuItem(value: 60, child: const Text('每1小时')),
-          DropdownMenuItem(value: 120, child: const Text('每2小时')),
-          DropdownMenuItem(value: 180, child: const Text('每3小时')),
-          DropdownMenuItem(value: 240, child: const Text('每4小时')),
+          DropdownMenuItem(value: 15, child: Text(AppLocalizations.of(context)!.every15Minutes)),
+          DropdownMenuItem(value: 30, child: Text(AppLocalizations.of(context)!.every30Minutes)),
+          DropdownMenuItem(value: 60, child: Text(AppLocalizations.of(context)!.every1Hour)),
+          DropdownMenuItem(value: 120, child: Text(AppLocalizations.of(context)!.every2Hours)),
+          DropdownMenuItem(value: 180, child: Text(AppLocalizations.of(context)!.every3Hours)),
+          DropdownMenuItem(value: 240, child: Text(AppLocalizations.of(context)!.every4Hours)),
         ],
         onChanged: (newValue) {
           if (newValue != null) {
@@ -377,22 +378,22 @@ class SettingsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('关于 Neverr'),
-        content: const Column(
+        title: Text(AppLocalizations.of(context)!.aboutNeverr),
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('版本: v1.0.0'),
-            SizedBox(height: 8),
-            Text('Neverr 是一款帮助你改变习惯的应用，通过录制和重复播放自己的声音来重塑潜意识。'),
-            SizedBox(height: 16),
-            Text('基于潜意识和习惯改变的研究，灵感来自李笑来的经验分享文章。'),
+            Text(AppLocalizations.of(context)!.aboutDialogVersion),
+            const SizedBox(height: 8),
+            Text(AppLocalizations.of(context)!.aboutDialogDescription),
+            const SizedBox(height: 16),
+            Text(AppLocalizations.of(context)!.aboutDialogInspiration),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('确定'),
+            child: Text(AppLocalizations.of(context)!.confirm),
           ),
         ],
       ),
@@ -403,12 +404,12 @@ class SettingsScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('重置设置'),
-        content: const Text('确定要重置所有设置吗？此操作不可恢复。'),
+        title: Text(AppLocalizations.of(context)!.resetSettings),
+        content: Text(AppLocalizations.of(context)!.resetConfirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('取消'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () async {
@@ -423,11 +424,11 @@ class SettingsScreen extends StatelessWidget {
               if (context.mounted) {
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('设置已重置')),
+                  SnackBar(content: Text(AppLocalizations.of(context)!.settingsReset)),
                 );
               }
             },
-            child: const Text('确定'),
+            child: Text(AppLocalizations.of(context)!.confirm),
           ),
         ],
       ),

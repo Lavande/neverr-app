@@ -5,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../core/theme/app_theme.dart';
 import '../providers/habit_provider.dart';
 import '../widgets/stats_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DataScreen extends StatefulWidget {
   const DataScreen({super.key});
@@ -22,7 +23,7 @@ class _DataScreenState extends State<DataScreen> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: const Text('数据统计'),
+        title: Text(AppLocalizations.of(context)!.dataStatistics),
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -58,7 +59,7 @@ class _DataScreenState extends State<DataScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '打卡日历',
+                          AppLocalizations.of(context)!.checkInCalendar,
                           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: AppTheme.textPrimaryColor,
@@ -66,7 +67,7 @@ class _DataScreenState extends State<DataScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          '显示所有习惯的每日重复次数',
+                          AppLocalizations.of(context)!.dailyRepeatCount,
                           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppTheme.textSecondaryColor,
                           ),
@@ -210,7 +211,7 @@ class _DataScreenState extends State<DataScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '${_selectedDay.year}年${_selectedDay.month}月${_selectedDay.day}日',
+                                  AppLocalizations.of(context)!.dateFormat(_selectedDay.year, _selectedDay.month, _selectedDay.day),
                                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     color: AppTheme.primaryColor,
@@ -265,7 +266,7 @@ class _DataScreenState extends State<DataScreen> {
     
     if (totalRepeatCount == 0) {
       return Text(
-        '该日期没有练习记录',
+        AppLocalizations.of(context)!.noRecordsForDate,
         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           color: AppTheme.textSecondaryColor,
         ),
@@ -276,7 +277,7 @@ class _DataScreenState extends State<DataScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '总共重复 $totalRepeatCount 次',
+          AppLocalizations.of(context)!.totalRepeats(totalRepeatCount),
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.w600,
             color: AppTheme.primaryColor,
@@ -296,7 +297,7 @@ class _DataScreenState extends State<DataScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    '${entry.key}: ${entry.value}次',
+                    AppLocalizations.of(context)!.habitRepeats(entry.key, entry.value),
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppTheme.textSecondaryColor,
                     ),

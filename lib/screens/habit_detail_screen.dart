@@ -4,6 +4,7 @@ import '../core/theme/app_theme.dart';
 import '../core/services/audio_service.dart';
 import '../models/habit_item.dart';
 import '../providers/habit_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HabitDetailScreen extends StatefulWidget {
   final HabitItem habit;
@@ -84,7 +85,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('很棒！已记录第 ${updatedHabit.todayRepeatCount} 次朗读'),
+            content: Text(AppLocalizations.of(context)!.recordingSuccess(updatedHabit.todayRepeatCount)),
             backgroundColor: AppTheme.successColor,
             duration: const Duration(seconds: 1),
           ),
@@ -93,7 +94,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('记录失败: $e')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.playFailed(e.toString()))),
         );
       }
     }
@@ -117,7 +118,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('播放失败: $e')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.playFailed(e.toString()))),
           );
         }
       } finally {
@@ -163,7 +164,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('播放失败: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.playFailed(e.toString()))),
       );
     } finally {
       if (mounted) {
@@ -230,11 +231,11 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
       });
       
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('保存成功')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.saveSuccess)),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('保存失败: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.saveFailed(e.toString()))),
       );
     }
   }
@@ -243,16 +244,16 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
     final result = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('删除确认'),
-        content: const Text('确定要删除这个习惯吗？此操作不可恢复。'),
+        title: Text(AppLocalizations.of(context)!.deleteConfirmTitle),
+        content: Text(AppLocalizations.of(context)!.deleteConfirmMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('取消'),
+            child: Text(AppLocalizations.of(context)!.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('删除'),
+            child: Text(AppLocalizations.of(context)!.delete),
           ),
         ],
       ),
@@ -268,7 +269,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('删除失败: $e')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.deleteFailed(e.toString()))),
         );
       }
     }
@@ -291,7 +292,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
           if (_isEditing)
             TextButton(
               onPressed: _saveChanges,
-              child: const Text('保存'),
+              child: Text(AppLocalizations.of(context)!.save),
             )
           else
             IconButton(
@@ -309,9 +310,9 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'delete',
-                child: Text('删除'),
+                child: Text(AppLocalizations.of(context)!.delete),
               ),
             ],
           ),
@@ -334,7 +335,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '语句内容',
+                      AppLocalizations.of(context)!.selfTalk,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: AppTheme.textPrimaryColor,
@@ -345,9 +346,9 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                     if (_isEditing)
                       TextField(
                         controller: _statementController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: '输入你的语句...',
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          hintText: AppLocalizations.of(context)!.enterStatement,
                         ),
                         maxLines: 3,
                       )
@@ -364,7 +365,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                     
                     // Reading options
                     Text(
-                      '练习方式',
+                      AppLocalizations.of(context)!.practiceMethod,
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: AppTheme.textPrimaryColor,
@@ -395,7 +396,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                '自己朗读（推荐）',
+                                AppLocalizations.of(context)!.selfReadingRecommended,
                                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: AppTheme.primaryColor,
@@ -405,7 +406,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '对着句子自己朗读，每读一次点击按钮记录',
+                            AppLocalizations.of(context)!.selfReadingDescription,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: AppTheme.textSecondaryColor,
                             ),
@@ -420,7 +421,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                                   child: ElevatedButton.icon(
                                     onPressed: _onSelfReading,
                                     icon: const Icon(Icons.add_circle),
-                                    label: const Text('我读了一遍'),
+                                    label: Text(AppLocalizations.of(context)!.iReadOnce),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppTheme.primaryColor,
                                       foregroundColor: Colors.white,
@@ -466,7 +467,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                '播放录音（适合公共场合）',
+                                AppLocalizations.of(context)!.audioPlayback,
                                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.w600,
                                   color: Colors.grey.shade700,
@@ -476,7 +477,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '播放之前录制的语音，可选择循环次数',
+                            AppLocalizations.of(context)!.audioPlaybackDescription,
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: AppTheme.textSecondaryColor,
                             ),
@@ -487,7 +488,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                           Row(
                             children: [
                               Text(
-                                '循环次数:',
+                                AppLocalizations.of(context)!.loopCountLabel,
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                               const SizedBox(width: 8),
@@ -496,7 +497,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                                 return Padding(
                                   padding: const EdgeInsets.only(right: 8),
                                   child: ChoiceChip(
-                                    label: Text('${count}次'),
+                                    label: Text('$count${AppLocalizations.of(context)!.loopTimesUnit}'),
                                     selected: _loopCount == count,
                                     onSelected: (selected) {
                                       if (selected) {
@@ -528,7 +529,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                                   child: ElevatedButton.icon(
                                     onPressed: _isLoopPlaying ? null : (_isPlaying ? null : _playAudio),
                                     icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow),
-                                    label: Text(_isPlaying ? '播放中...' : '播放一次'),
+                                    label: Text(_isPlaying ? AppLocalizations.of(context)!.playing : AppLocalizations.of(context)!.playOnce),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.grey.shade600,
                                       foregroundColor: Colors.white,
@@ -545,8 +546,8 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                                     onPressed: _isPlaying ? null : (_isLoopPlaying ? _stopLoop : _playAudioLoop),
                                     icon: Icon(_isLoopPlaying ? Icons.stop : Icons.repeat),
                                     label: Text(_isLoopPlaying 
-                                        ? '停止 (${_currentLoop}/${_loopCount})'
-                                        : '循环播放'),
+                                        ? AppLocalizations.of(context)!.stopLoop(_currentLoop, _loopCount)
+                                        : AppLocalizations.of(context)!.loopPlay),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: _isLoopPlaying 
                                           ? AppTheme.warningColor 
@@ -563,7 +564,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                             )
                           else
                             Text(
-                              '暂无录音文件',
+                              AppLocalizations.of(context)!.noRecordingFile,
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 color: Colors.grey.shade500,
                                 fontStyle: FontStyle.italic,
@@ -591,7 +592,7 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '统计数据',
+                      AppLocalizations.of(context)!.statisticsData,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: AppTheme.textPrimaryColor,
@@ -603,20 +604,20 @@ class _HabitDetailScreenState extends State<HabitDetailScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         _buildStatItem(
-                          '当前连续',
-                          '${currentHabit.currentStreak}天',
+                          AppLocalizations.of(context)!.currentStreakLabel,
+                          '${currentHabit.currentStreak}${AppLocalizations.of(context)!.daysUnit}',
                           AppTheme.successColor,
                           Icons.local_fire_department,
                         ),
                         _buildStatItem(
-                          '总完成',
-                          '${currentHabit.completedDates.length}天',
+                          AppLocalizations.of(context)!.totalCompletedLabel,
+                          '${currentHabit.completedDates.length}${AppLocalizations.of(context)!.daysUnit}',
                           AppTheme.primaryColor,
                           Icons.check_circle,
                         ),
                         _buildStatItem(
-                          '今日重复',
-                          '${currentHabit.todayRepeatCount}次',
+                          AppLocalizations.of(context)!.todayRepeatLabel,
+                          '${currentHabit.todayRepeatCount}${AppLocalizations.of(context)!.timesUnit}',
                           AppTheme.secondaryColor,
                           Icons.refresh,
                         ),

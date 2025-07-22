@@ -1,0 +1,878 @@
+{
+  "@@locale": "zh",
+  "appTitle": "Neverr",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "slogan": "不止是戒掉，而是变更好。",
+  "@slogan": {
+    "description": "Application slogan"
+  },
+  
+  "home": "首页",
+  "@home": {
+    "description": "Home tab label"
+  },
+  "data": "数据",
+  "@data": {
+    "description": "Data tab label"
+  },
+  "settings": "设置",
+  "@settings": {
+    "description": "Settings tab label"
+  },
+  
+  "goodMorning": "早上好",
+  "@goodMorning": {
+    "description": "Morning greeting"
+  },
+  "goodAfternoon": "下午好",
+  "@goodAfternoon": {
+    "description": "Afternoon greeting"
+  },
+  "goodEvening": "晚上好",
+  "@goodEvening": {
+    "description": "Evening greeting"
+  },
+  "lateNight": "深夜了，早点休息",
+  "@lateNight": {
+    "description": "Late night greeting"
+  },
+  
+  "motivationalMessage1": "每一次重复，都是改变的开始",
+  "@motivationalMessage1": {
+    "description": "Motivational message 1"
+  },
+  "motivationalMessage2": "你的声音，就是改变的力量",
+  "@motivationalMessage2": {
+    "description": "Motivational message 2"
+  },
+  "motivationalMessage3": "坚持下去，你会感谢今天的自己",
+  "@motivationalMessage3": {
+    "description": "Motivational message 3"
+  },
+  "motivationalMessage4": "改变从现在开始，从这一刻开始",
+  "@motivationalMessage4": {
+    "description": "Motivational message 4"
+  },
+  "motivationalMessage5": "相信自己，你比想象中更强大",
+  "@motivationalMessage5": {
+    "description": "Motivational message 5"
+  },
+  
+  "myHabits": "我的习惯",
+  "@myHabits": {
+    "description": "My habits section title"
+  },
+  "totalHabits": "共{count}个",
+  "@totalHabits": {
+    "description": "Total habits count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noHabitsYet": "还没有习惯项目",
+  "@noHabitsYet": {
+    "description": "No habits message"
+  },
+  "noHabitsDescription": "点击右下角的 + 按钮\n开始创建你的第一个习惯改变项目",
+  "@noHabitsDescription": {
+    "description": "No habits description"
+  },
+  "startCreating": "开始创建",
+  "@startCreating": {
+    "description": "Start creating button"
+  },
+  "startChange": "开始改变",
+  "@startChange": {
+    "description": "Start change button"
+  },
+  
+  "createGoal": "创建目标",
+  "@createGoal": {
+    "description": "Create goal screen title"
+  },
+  "whatToChange": "你想改变什么？",
+  "@whatToChange": {
+    "description": "What to change question"
+  },
+  "selectCategoryDescription": "选择一个习惯分类，或者输入自定义习惯",
+  "@selectCategoryDescription": {
+    "description": "Select category description"
+  },
+  "presetCategories": "预设分类",
+  "@presetCategories": {
+    "description": "Preset categories"
+  },
+  "custom": "自定义",
+  "@custom": {
+    "description": "Custom option"
+  },
+  "enterHabitName": "输入习惯名称",
+  "@enterHabitName": {
+    "description": "Enter habit name"
+  },
+  "habitNamePlaceholder": "例如：熬夜、暴饮暴食、拖延等",
+  "@habitNamePlaceholder": {
+    "description": "Habit name placeholder"
+  },
+  "breakBadHabits": "戒除坏习惯",
+  "@breakBadHabits": {
+    "description": "Break bad habits"
+  },
+  "buildGoodHabits": "培养好习惯",
+  "@buildGoodHabits": {
+    "description": "Build good habits"
+  },
+  "generatedStatement": "生成的语句",
+  "@generatedStatement": {
+    "description": "Generated statement"
+  },
+  "statementPlaceholder": "请输入自我对话语句，或选择预设分类自动填入",
+  "@statementPlaceholder": {
+    "description": "Statement placeholder"
+  },
+  "selfDialogueFramework": "自我对话脚本框架",
+  "@selfDialogueFramework": {
+    "description": "Self dialogue framework"
+  },
+  "frameworkStructure": "自我陈述 + 加个理由 + 情绪标签",
+  "@frameworkStructure": {
+    "description": "Framework structure"
+  },
+  "continueRecording": "继续录制",
+  "@continueRecording": {
+    "description": "Continue recording button"
+  },
+  "pleaseEnterStatement": "请先输入或生成语句",
+  "@pleaseEnterStatement": {
+    "description": "Please enter statement message"
+  },
+  
+  "notificationSettings": "通知设置",
+  "@notificationSettings": {
+    "description": "Notification settings"
+  },
+  "enableNotifications": "启用通知",
+  "@enableNotifications": {
+    "description": "Enable notifications"
+  },
+  "enableNotificationsDescription": "接收每日提醒通知",
+  "@enableNotificationsDescription": {
+    "description": "Enable notifications description"
+  },
+  "reminderTimeRange": "提醒时间区间",
+  "@reminderTimeRange": {
+    "description": "Reminder time range"
+  },
+  "reminderTimeRangeDescription": "设置提醒的开始和结束时间",
+  "@reminderTimeRangeDescription": {
+    "description": "Reminder time range description"
+  },
+  "reminderInterval": "提醒间隔",
+  "@reminderInterval": {
+    "description": "Reminder interval"
+  },
+  "reminderIntervalDescription": "设置提醒的频率",
+  "@reminderIntervalDescription": {
+    "description": "Reminder interval description"
+  },
+  "startTime": "开始时间",
+  "@startTime": {
+    "description": "Start time"
+  },
+  "endTime": "结束时间",
+  "@endTime": {
+    "description": "End time"
+  },
+  "every15Minutes": "每15分钟",
+  "@every15Minutes": {
+    "description": "Every 15 minutes"
+  },
+  "every30Minutes": "每30分钟",
+  "@every30Minutes": {
+    "description": "Every 30 minutes"
+  },
+  "every1Hour": "每1小时",
+  "@every1Hour": {
+    "description": "Every 1 hour"
+  },
+  "every2Hours": "每2小时",
+  "@every2Hours": {
+    "description": "Every 2 hours"
+  },
+  "every3Hours": "每3小时",
+  "@every3Hours": {
+    "description": "Every 3 hours"
+  },
+  "every4Hours": "每4小时",
+  "@every4Hours": {
+    "description": "Every 4 hours"
+  },
+  
+  "languageSettings": "语言设置",
+  "@languageSettings": {
+    "description": "Language settings"
+  },
+  "language": "语言",
+  "@language": {
+    "description": "Language"
+  },
+  "selectLanguage": "选择应用语言",
+  "@selectLanguage": {
+    "description": "Select app language"
+  },
+  
+  "about": "关于",
+  "@about": {
+    "description": "About section"
+  },
+  "aboutNeverr": "关于 Neverr",
+  "@aboutNeverr": {
+    "description": "About Neverr"
+  },
+  "aboutNeverrDescription": "不止是戒掉，而是变更好。",
+  "@aboutNeverrDescription": {
+    "description": "About Neverr description"
+  },
+  "versionInfo": "版本信息",
+  "@versionInfo": {
+    "description": "Version info"
+  },
+  "version": "v1.0.0",
+  "@version": {
+    "description": "Version number"
+  },
+  
+  "dangerZone": "危险操作",
+  "@dangerZone": {
+    "description": "Danger zone"
+  },
+  "resetAllSettings": "重置所有设置",
+  "@resetAllSettings": {
+    "description": "Reset all settings"
+  },
+  "resetToDefault": "恢复到默认设置",
+  "@resetToDefault": {
+    "description": "Reset to default"
+  },
+  "resetSettings": "重置设置",
+  "@resetSettings": {
+    "description": "Reset settings dialog title"
+  },
+  "resetConfirmation": "确定要重置所有设置吗？此操作不可恢复。",
+  "@resetConfirmation": {
+    "description": "Reset confirmation message"
+  },
+  "cancel": "取消",
+  "@cancel": {
+    "description": "Cancel button"
+  },
+  "confirm": "确定",
+  "@confirm": {
+    "description": "Confirm button"
+  },
+  "settingsReset": "设置已重置",
+  "@settingsReset": {
+    "description": "Settings reset message"
+  },
+  
+  "aboutDialogVersion": "版本: v1.0.0",
+  "@aboutDialogVersion": {
+    "description": "About dialog version"
+  },
+  "aboutDialogDescription": "Neverr 是一款帮助你改变习惯的应用，通过录制和重复播放自己的声音来重塑潜意识。",
+  "@aboutDialogDescription": {
+    "description": "About dialog description"
+  },
+  "aboutDialogInspiration": "基于潜意识和习惯改变的研究，灵感来自李笑来的经验分享文章。",
+  "@aboutDialogInspiration": {
+    "description": "About dialog inspiration"
+  },
+  "footer": "© 2024 Neverr App\nMade with ❤️ for better habits",
+  "@footer": {
+    "description": "App footer"
+  },
+  
+  "dataStatistics": "数据统计",
+  "@dataStatistics": {
+    "description": "Data statistics"
+  },
+  "checkInCalendar": "打卡日历",
+  "@checkInCalendar": {
+    "description": "Check-in calendar"
+  },
+  "dailyRepeatCount": "显示所有习惯的每日重复次数",
+  "@dailyRepeatCount": {
+    "description": "Daily repeat count description"
+  },
+  
+  "recordingSuccess": "很棒！已记录第 {count} 次朗读",
+  "@recordingSuccess": {
+    "description": "Recording success message",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recordingFailed": "记录失败: {error}",
+  "@recordingFailed": {
+    "description": "Recording failed message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  
+  "streakDays": "连续 {days} 天",
+  "@streakDays": {
+    "description": "Streak days display",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "todayRepeat": "今日 {count} 次",
+  "@todayRepeat": {
+    "description": "Today repeat count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "completionRate": "完成率 {rate}%",
+  "@completionRate": {
+    "description": "Completion rate",
+    "placeholders": {
+      "rate": {
+        "type": "int"
+      }
+    }
+  },
+  "habitDetails": "习惯详情",
+  "@habitDetails": {
+    "description": "Habit details title"
+  },
+  "selfTalk": "自我对话",
+  "@selfTalk": {
+    "description": "Self talk section"
+  },
+  "editStatement": "编辑语句",
+  "@editStatement": {
+    "description": "Edit statement button"
+  },
+  "saveStatement": "保存语句",
+  "@saveStatement": {
+    "description": "Save statement button"
+  },
+  "playRecording": "播放录音",
+  "@playRecording": {
+    "description": "Play recording button"
+  },
+  "stopPlaying": "停止播放",
+  "@stopPlaying": {
+    "description": "Stop playing button"
+  },
+  "loopPlayback": "循环播放",
+  "@loopPlayback": {
+    "description": "Loop playback section"
+  },
+  "loopCount": "循环次数",
+  "@loopCount": {
+    "description": "Loop count"
+  },
+  "startLoop": "开始循环",
+  "@startLoop": {
+    "description": "Start loop button"
+  },
+  "stopLoop": "停止循环",
+  "@stopLoop": {
+    "description": "Stop loop button"
+  },
+  "selfReading": "自我朗读",
+  "@selfReading": {
+    "description": "Self reading button"
+  },
+  "progress": "进度",
+  "@progress": {
+    "description": "Progress section"
+  },
+  "currentStreak": "当前连击",
+  "@currentStreak": {
+    "description": "Current streak"
+  },
+  "totalCompletions": "总完成次数",
+  "@totalCompletions": {
+    "description": "Total completions"
+  },
+  "firstCompletion": "首次完成",
+  "@firstCompletion": {
+    "description": "First completion"
+  },
+  "lastCompletion": "最近完成",
+  "@lastCompletion": {
+    "description": "Last completion"
+  },
+  "never": "从未",
+  "@never": {
+    "description": "Never"
+  },
+  "recordStatement": "录制语句",
+  "@recordStatement": {
+    "description": "Record statement title"
+  },
+  "recordingInstructions": "请大声、清晰地朗读你的自我对话语句。录制完成后，这段音频将用于循环播放。",
+  "@recordingInstructions": {
+    "description": "Recording instructions"
+  },
+  "tapToRecord": "点击录制",
+  "@tapToRecord": {
+    "description": "Tap to record"
+  },
+  "recording": "录制中",
+  "@recording": {
+    "description": "Recording"
+  },
+  "tapToStop": "点击停止",
+  "@tapToStop": {
+    "description": "Tap to stop"
+  },
+  "recordingComplete": "录制完成",
+  "@recordingComplete": {
+    "description": "Recording complete"
+  },
+  "playback": "播放录音",
+  "@playback": {
+    "description": "Playback"
+  },
+  "reRecord": "重新录制",
+  "@reRecord": {
+    "description": "Re-record"
+  },
+  "saveAndContinue": "保存并继续",
+  "@saveAndContinue": {
+    "description": "Save and continue"
+  },
+  "recordingTip": "💡 录制技巧：选择安静的环境，用坚定的语调朗读，让你的声音充满力量！",
+  "@recordingTip": {
+    "description": "Recording tip"
+  },
+  "permissionRequired": "需要麦克风权限",
+  "@permissionRequired": {
+    "description": "Permission required"
+  },
+  "permissionDescription": "录制音频需要访问麦克风权限，请在设置中允许。",
+  "@permissionDescription": {
+    "description": "Permission description"
+  },
+  "openSettings": "打开设置",
+  "@openSettings": {
+    "description": "Open settings"
+  },
+  "smoking": "吸烟",
+  "@smoking": {
+    "description": "Smoking habit"
+  },
+  "shortVideos": "刷短视频",
+  "@shortVideos": {
+    "description": "Short videos habit"
+  },
+  "procrastination": "拖延",
+  "@procrastination": {
+    "description": "Procrastination habit"
+  },
+  "drinking": "饮酒",
+  "@drinking": {
+    "description": "Drinking habit"
+  },
+  "overeating": "暴饮暴食",
+  "@overeating": {
+    "description": "Overeating habit"
+  },
+  "lateSleeping": "熬夜",
+  "@lateSleeping": {
+    "description": "Late sleeping habit"
+  },
+  "gaming": "游戏成瘾",
+  "@gaming": {
+    "description": "Gaming addiction"
+  },
+  "socialMedia": "社交媒体",
+  "@socialMedia": {
+    "description": "Social media habit"
+  },
+  "exercise": "运动",
+  "@exercise": {
+    "description": "Exercise habit"
+  },
+  "reading": "阅读",
+  "@reading": {
+    "description": "Reading habit"
+  },
+  "meditation": "冥想",
+  "@meditation": {
+    "description": "Meditation habit"
+  },
+  "earlyRising": "早起",
+  "@earlyRising": {
+    "description": "Early rising habit"
+  },
+  "habitCreatedSuccessfully": "习惯创建成功！",
+  "@habitCreatedSuccessfully": {
+    "description": "Habit created successfully message"
+  },
+  "failedToCreateHabit": "创建习惯失败",
+  "@failedToCreateHabit": {
+    "description": "Failed to create habit message"
+  },
+  "delete": "删除",
+  "@delete": {
+    "description": "Delete button"
+  },
+  "statementContent": "语句内容",
+  "@statementContent": {
+    "description": "Statement content title"
+  },
+  "enterStatement": "输入你的语句...",
+  "@enterStatement": {
+    "description": "Enter statement placeholder"
+  },
+  "practiceMethod": "练习方式",
+  "@practiceMethod": {
+    "description": "Practice method title"
+  },
+  "selfReadingRecommended": "自己朗读（推荐）",
+  "@selfReadingRecommended": {
+    "description": "Self reading recommended"
+  },
+  "selfReadingDescription": "对着句子自己朗读，每读一次点击按钮记录",
+  "@selfReadingDescription": {
+    "description": "Self reading description"
+  },
+  "iReadOnce": "我读了一遍",
+  "@iReadOnce": {
+    "description": "I read once button"
+  },
+  "audioPlayback": "播放录音（适合公共场合）",
+  "@audioPlayback": {
+    "description": "Audio playback title"
+  },
+  "audioPlaybackDescription": "播放之前录制的语音，可选择循环次数",
+  "@audioPlaybackDescription": {
+    "description": "Audio playback description"
+  },
+  "loopCountLabel": "循环次数:",
+  "@loopCountLabel": {
+    "description": "Loop count label"
+  },
+  "todayProgress": "今日进度",
+  "@todayProgress": {
+    "description": "Today's progress"
+  },
+  "completed": "已完成",
+  "@completed": {
+    "description": "Completed"
+  },
+  "repeatCount": "重复次数",
+  "@repeatCount": {
+    "description": "Repeat count"
+  },
+  "incomplete": "未完成",
+  "@incomplete": {
+    "description": "Incomplete"
+  },
+  "excellent": "优秀",
+  "@excellent": {
+    "description": "Excellent"
+  },
+  "good": "良好",
+  "@good": {
+    "description": "Good"
+  },
+  "needsImprovement": "待改进",
+  "@needsImprovement": {
+    "description": "Needs improvement"
+  },
+  "perfect": "完美",
+  "@perfect": {
+    "description": "Perfect"
+  },
+  "keepGoing": "加油",
+  "@keepGoing": {
+    "description": "Keep going"
+  },
+  "perfectMessage": "🎉 今天表现完美！继续保持这个节奏！",
+  "@perfectMessage": {
+    "description": "Perfect completion message"
+  },
+  "excellentMessage": "👏 做得很好！再努力一点就能达到完美！",
+  "@excellentMessage": {
+    "description": "Excellent completion message"
+  },
+  "goodMessage": "💪 不错的开始！继续加油完成剩余任务！",
+  "@goodMessage": {
+    "description": "Good completion message"
+  },
+  "encouragementMessage": "🌟 每一步都是进步！现在开始也不晚！",
+  "@encouragementMessage": {
+    "description": "Encouragement message"
+  },
+  "firstHabitMessage": "🚀 创建你的第一个习惯，开始改变之旅！",
+  "@firstHabitMessage": {
+    "description": "First habit creation message"
+  },
+  "save": "保存",
+  "@save": {
+    "description": "Save button"
+  },
+  "playOnce": "播放一次",
+  "@playOnce": {
+    "description": "Play once button"
+  },
+  "playing": "播放中...",
+  "@playing": {
+    "description": "Playing indicator"
+  },
+  "loopPlay": "循环播放",
+  "@loopPlay": {
+    "description": "Loop play button"
+  },
+  "stopLoop": "停止 ({current}/{total})",
+  "@stopLoop": {
+    "description": "Stop loop button with progress",
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "noRecordingFile": "暂无录音文件",
+  "@noRecordingFile": {
+    "description": "No recording file message"
+  },
+  "statisticsData": "统计数据",
+  "@statisticsData": {
+    "description": "Statistics data section title"
+  },
+  "currentStreakLabel": "当前连续",
+  "@currentStreakLabel": {
+    "description": "Current streak label"
+  },
+  "totalCompletedLabel": "总完成",
+  "@totalCompletedLabel": {
+    "description": "Total completed label"
+  },
+  "todayRepeatLabel": "今日重复",
+  "@todayRepeatLabel": {
+    "description": "Today repeat label"
+  },
+  "daysUnit": "天",
+  "@daysUnit": {
+    "description": "Days unit"
+  },
+  "timesUnit": "次",
+  "@timesUnit": {
+    "description": "Times unit"
+  },
+  "loopTimesUnit": "次",
+  "@loopTimesUnit": {
+    "description": "Loop times unit"
+  },
+  "deleteConfirmTitle": "删除确认",
+  "@deleteConfirmTitle": {
+    "description": "Delete confirmation dialog title"
+  },
+  "deleteConfirmMessage": "确定要删除这个习惯吗？此操作不可恢复。",
+  "@deleteConfirmMessage": {
+    "description": "Delete confirmation dialog message"
+  },
+  "saveSuccess": "保存成功",
+  "@saveSuccess": {
+    "description": "Save success message"
+  },
+  "saveFailed": "保存失败: {error}",
+  "@saveFailed": {
+    "description": "Save failed message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteFailed": "删除失败: {error}",
+  "@deleteFailed": {
+    "description": "Delete failed message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "playFailed": "播放失败: {error}",
+  "@playFailed": {
+    "description": "Play failed message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "recordingFailed": "录音启动失败，请重试",
+  "@recordingFailed": {
+    "description": "Recording failed message"
+  },
+  "recordingError": "录音出错: {error}",
+  "@recordingError": {
+    "description": "Recording error message",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "speakSlowly": "说慢一点，说满5秒以上",
+  "@speakSlowly": {
+    "description": "Recording instruction"
+  },
+  "isRecording": "正在录音...",
+  "@isRecording": {
+    "description": "Recording in progress"
+  },
+  "recordingCompleted": "录音完成",
+  "@recordingCompleted": {
+    "description": "Recording completed"
+  },
+  "tapToStartRecording": "点击开始录音",
+  "@tapToStartRecording": {
+    "description": "Tap to start recording"
+  },
+  "stop": "停止",
+  "@stop": {
+    "description": "Stop button"
+  },
+  "play": "播放",
+  "@play": {
+    "description": "Play button"
+  },
+  "reRecord": "重录",
+  "@reRecord": {
+    "description": "Re-record button"
+  },
+  "pleaseRecordFirst": "请先录制语音",
+  "@pleaseRecordFirst": {
+    "description": "Please record first message"
+  },
+  "microphonePermissionNeeded": "需要麦克风权限",
+  "@microphonePermissionNeeded": {
+    "description": "Microphone permission needed title"
+  },
+  "permissionInstructions": "为了录制您的习惯语句，需要访问麦克风权限。\\n\\n请按照以下步骤操作：\\n1. 点击\\\"去设置\\\"按钮\\n2. 找到\\\"麦克风\\\"选项\\n3. 打开麦克风权限\\n4. 返回App重试",
+  "@permissionInstructions": {
+    "description": "Permission instructions"
+  },
+  "goToSettings": "去设置",
+  "@goToSettings": {
+    "description": "Go to settings button"
+  },
+  "dateFormat": "{year}年{month}月{day}日",
+  "@dateFormat": {
+    "description": "Date format",
+    "placeholders": {
+      "year": {
+        "type": "int"
+      },
+      "month": {
+        "type": "int"
+      },
+      "day": {
+        "type": "int"
+      }
+    }
+  },
+  "noRecordsForDate": "该日期没有练习记录",
+  "@noRecordsForDate": {
+    "description": "No records for selected date"
+  },
+  "totalRepeats": "总共重复 {count} 次",
+  "@totalRepeats": {
+    "description": "Total repeat count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "habitRepeats": "{habit}: {count}次",
+  "@habitRepeats": {
+    "description": "Habit repeat count",
+    "placeholders": {
+      "habit": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "initializing": "正在初始化...",
+  "@initializing": {
+    "description": "Initializing message on splash screen"
+  },
+  "onboardingTitle1": "你不是\"戒掉\"",
+  "@onboardingTitle1": {
+    "description": "Onboarding page 1 title"
+  },
+  "onboardingSubtitle1": "你是\"从来不做\"",
+  "@onboardingSubtitle1": {
+    "description": "Onboarding page 1 subtitle"
+  },
+  "onboardingDescription1": "不要说\"我要戒烟\"，而是告诉自己\"我从来不吸烟\"。这种心理暗示会让改变变得更容易。",
+  "@onboardingDescription1": {
+    "description": "Onboarding page 1 description"
+  },
+  "onboardingTitle2": "用自己的声音",
+  "@onboardingTitle2": {
+    "description": "Onboarding page 2 title"
+  },
+  "onboardingSubtitle2": "向大脑\"明示\"",
+  "@onboardingSubtitle2": {
+    "description": "Onboarding page 2 subtitle"
+  },
+  "onboardingDescription2": "录制自己的声音，大声说出改变的宣言。你的潜意识最信任你自己的声音。",
+  "@onboardingDescription2": {
+    "description": "Onboarding page 2 description"
+  },
+  "onboardingTitle3": "每天听一遍",
+  "@onboardingTitle3": {
+    "description": "Onboarding page 3 title"
+  },
+  "onboardingSubtitle3": "改变从此刻开始",
+  "@onboardingSubtitle3": {
+    "description": "Onboarding page 3 subtitle"
+  },
+  "onboardingDescription3": "每天播放一遍你的声音宣言，持续5秒以上。重复的力量会帮你重塑潜意识。",
+  "@onboardingDescription3": {
+    "description": "Onboarding page 3 description"
+  },
+  "continueButton": "继续",
+  "@continueButton": {
+    "description": "Continue button"
+  },
+  "getStarted": "开始使用",
+  "@getStarted": {
+    "description": "Get started button"
+  },
+  "skip": "跳过",
+  "@skip": {
+    "description": "Skip button"
+  }
+}

@@ -6,6 +6,7 @@ import '../providers/habit_provider.dart';
 import '../providers/app_settings_provider.dart';
 import '../widgets/habit_card.dart';
 import '../widgets/stats_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -60,7 +61,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           children: [
                             Flexible(
                               child: Text(
-                                settingsProvider.getGreeting(),
+                                _getGreeting(context),
                                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: AppTheme.textPrimaryColor,
@@ -71,7 +72,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             const SizedBox(height: 4),
                             Flexible(
                               child: Text(
-                                settingsProvider.getMotivationalMessage(),
+                                _getMotivationalMessage(context),
                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                   color: AppTheme.textSecondaryColor,
                                 ),
@@ -119,14 +120,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '我的习惯',
+                            AppLocalizations.of(context)!.myHabits,
                             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppTheme.textPrimaryColor,
                             ),
                           ),
                           Text(
-                            '共${habitProvider.totalActiveHabits}个',
+                            AppLocalizations.of(context)!.totalHabits(habitProvider.totalActiveHabits),
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: AppTheme.textSecondaryColor,
                             ),
@@ -214,7 +215,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 24),
           Text(
-            '还没有习惯项目',
+            AppLocalizations.of(context)!.noHabitsYet,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: AppTheme.textPrimaryColor,
@@ -222,7 +223,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            '点击右下角的 + 按钮\n开始创建你的第一个习惯改变项目',
+            AppLocalizations.of(context)!.noHabitsDescription,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppTheme.textSecondaryColor,
             ),
@@ -241,10 +242,38 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text('开始创建'),
+            child: Text(AppLocalizations.of(context)!.startCreating),
           ),
         ],
       ),
     );
+  }
+
+  String _getGreeting(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    final hour = DateTime.now().hour;
+    if (hour < 6) {
+      return localizations.lateNight;
+    } else if (hour < 12) {
+      return localizations.goodMorning;
+    } else if (hour < 18) {
+      return localizations.goodAfternoon;
+    } else {
+      return localizations.goodEvening;
+    }
+  }
+
+  String _getMotivationalMessage(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    final messages = [
+      localizations.motivationalMessage1,
+      localizations.motivationalMessage2,
+      localizations.motivationalMessage3,
+      localizations.motivationalMessage4,
+      localizations.motivationalMessage5,
+    ];
+    
+    final index = DateTime.now().day % messages.length;
+    return messages[index];
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart';
 import '../core/router/app_router.dart';
 import '../models/habit_category.dart';
+import '../services/habit_category_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateGoalScreen extends StatefulWidget {
   const CreateGoalScreen({super.key});
@@ -49,7 +51,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
   void _proceedToRecording() {
     if (_statementController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请先输入或生成语句')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseEnterStatement)),
       );
       return;
     }
@@ -69,7 +71,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: const Text('创建目标'),
+        title: Text(AppLocalizations.of(context)!.createGoal),
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
       ),
@@ -81,7 +83,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
             children: [
               // Title
               Text(
-                '你想改变什么？',
+                AppLocalizations.of(context)!.whatToChange,
                 style: Theme.of(context).textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: AppTheme.textPrimaryColor,
@@ -89,7 +91,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                '选择一个习惯分类，或者输入自定义习惯',
+                AppLocalizations.of(context)!.selectCategoryDescription,
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: AppTheme.textSecondaryColor,
                 ),
@@ -102,7 +104,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                 children: [
                   Expanded(
                     child: _buildToggleButton(
-                      '预设分类',
+                      AppLocalizations.of(context)!.presetCategories,
                       !_isCustomHabit,
                       () => setState(() => _isCustomHabit = false),
                     ),
@@ -110,7 +112,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: _buildToggleButton(
-                      '自定义',
+                      AppLocalizations.of(context)!.custom,
                       _isCustomHabit,
                       () => setState(() => _isCustomHabit = true),
                     ),
@@ -159,9 +161,9 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                       ),
                       shadowColor: Colors.transparent,
                     ),
-                    child: const Text(
-                      '继续录制',
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(context)!.continueRecording,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
                       ),
@@ -205,7 +207,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '输入习惯名称',
+          AppLocalizations.of(context)!.enterHabitName,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -214,7 +216,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         TextField(
           controller: _customHabitController,
           decoration: InputDecoration(
-            hintText: '例如：熬夜、暴饮暴食、拖延等',
+            hintText: AppLocalizations.of(context)!.habitNamePlaceholder,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -240,24 +242,24 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '戒除坏习惯',
+          AppLocalizations.of(context)!.breakBadHabits,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 12),
-        _buildCategoryGrid(HabitCategory.predefinedCategories),
+        _buildCategoryGrid(HabitCategoryService.getLocalizedPredefinedCategories(context)),
         
         const SizedBox(height: 24),
         
         Text(
-          '培养好习惯',
+          AppLocalizations.of(context)!.buildGoodHabits,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
           ),
         ),
         const SizedBox(height: 12),
-        _buildCategoryGrid(HabitCategory.positiveHabits),
+        _buildCategoryGrid(HabitCategoryService.getLocalizedPositiveHabits(context)),
       ],
     );
   }
@@ -314,7 +316,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '生成的语句',
+          AppLocalizations.of(context)!.generatedStatement,
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
           ),
@@ -323,7 +325,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
         TextField(
           controller: _statementController,
           decoration: InputDecoration(
-            hintText: '请输入自我对话语句，或选择预设分类自动填入',
+            hintText: AppLocalizations.of(context)!.statementPlaceholder,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -363,7 +365,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    '自我对话脚本框架',
+                    AppLocalizations.of(context)!.selfDialogueFramework,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: AppTheme.primaryColor,
@@ -373,7 +375,7 @@ class _CreateGoalScreenState extends State<CreateGoalScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                '自由陈述 + 加个理由 + 情绪标签',
+                AppLocalizations.of(context)!.frameworkStructure,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w500,
                   color: AppTheme.textPrimaryColor,

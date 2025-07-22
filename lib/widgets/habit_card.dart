@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart';
 import '../models/habit_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HabitCard extends StatelessWidget {
   final HabitItem habit;
@@ -75,7 +76,7 @@ class HabitCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '开始改变',
+                            AppLocalizations.of(context)!.startChange,
                             style: TextStyle(
                               color: AppTheme.primaryColor,
                               fontWeight: FontWeight.w500,

@@ -7,6 +7,7 @@ import '../providers/app_settings_provider.dart';
 import '../widgets/habit_card.dart';
 import 'settings_screen.dart';
 import 'data_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -55,18 +56,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         selectedItemColor: AppTheme.primaryColor,
         unselectedItemColor: AppTheme.textSecondaryColor,
         elevation: 8,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: '首页',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.home,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: '数据',
+            icon: const Icon(Icons.bar_chart),
+            label: AppLocalizations.of(context)!.data,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: '设置',
+            icon: const Icon(Icons.settings),
+            label: AppLocalizations.of(context)!.settings,
           ),
         ],
       ),
@@ -120,7 +121,7 @@ class _HomeTabState extends State<HomeTab> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            settingsProvider.getGreeting(),
+                            _getGreeting(context),
                             style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: AppTheme.textPrimaryColor,
@@ -129,7 +130,7 @@ class _HomeTabState extends State<HomeTab> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            settingsProvider.getMotivationalMessage(),
+                            _getMotivationalMessage(context),
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: AppTheme.textSecondaryColor,
                               fontSize: 16,
@@ -150,14 +151,14 @@ class _HomeTabState extends State<HomeTab> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '我的习惯',
+                          AppLocalizations.of(context)!.myHabits,
                           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: AppTheme.textPrimaryColor,
                           ),
                         ),
                         Text(
-                          '共${habitProvider.totalActiveHabits}个',
+                          AppLocalizations.of(context)!.totalHabits(habitProvider.totalActiveHabits),
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppTheme.textSecondaryColor,
                           ),
@@ -237,7 +238,7 @@ class _HomeTabState extends State<HomeTab> {
           ),
           const SizedBox(height: 24),
           Text(
-            '还没有习惯项目',
+            AppLocalizations.of(context)!.noHabitsYet,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.bold,
               color: AppTheme.textPrimaryColor,
@@ -245,7 +246,7 @@ class _HomeTabState extends State<HomeTab> {
           ),
           const SizedBox(height: 8),
           Text(
-            '点击右下角的 + 按钮\n开始创建你的第一个习惯改变项目',
+            AppLocalizations.of(context)!.noHabitsDescription,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: AppTheme.textSecondaryColor,
             ),
@@ -264,10 +265,38 @@ class _HomeTabState extends State<HomeTab> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: const Text('开始创建'),
+            child: Text(AppLocalizations.of(context)!.startCreating),
           ),
         ],
       ),
     );
+  }
+
+  String _getGreeting(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    final hour = DateTime.now().hour;
+    if (hour < 6) {
+      return localizations.lateNight;
+    } else if (hour < 12) {
+      return localizations.goodMorning;
+    } else if (hour < 18) {
+      return localizations.goodAfternoon;
+    } else {
+      return localizations.goodEvening;
+    }
+  }
+
+  String _getMotivationalMessage(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+    final messages = [
+      localizations.motivationalMessage1,
+      localizations.motivationalMessage2,
+      localizations.motivationalMessage3,
+      localizations.motivationalMessage4,
+      localizations.motivationalMessage5,
+    ];
+    
+    final index = DateTime.now().day % messages.length;
+    return messages[index];
   }
 }

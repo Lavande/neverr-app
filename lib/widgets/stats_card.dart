@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/theme/app_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class StatsCard extends StatelessWidget {
   final int completedToday;
@@ -32,7 +33,7 @@ class StatsCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '今日进度',
+                  AppLocalizations.of(context)!.todayProgress,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w600,
                     color: AppTheme.textPrimaryColor,
@@ -45,7 +46,7 @@ class StatsCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    _getCompletionText(),
+                    _getCompletionText(context),
                     style: TextStyle(
                       color: _getCompletionColor(),
                       fontWeight: FontWeight.w600,
@@ -101,21 +102,24 @@ class StatsCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildStatItem(
-                        '已完成',
+                        context,
+                        AppLocalizations.of(context)!.completed,
                         '$completedToday',
                         AppTheme.successColor,
                         Icons.check_circle,
                       ),
                       const SizedBox(height: 8),
                       _buildStatItem(
-                        '重复次数',
+                        context,
+                        AppLocalizations.of(context)!.repeatCount,
                         '$todayRepeatCount',
                         AppTheme.primaryColor,
                         Icons.refresh,
                       ),
                       const SizedBox(height: 8),
                       _buildStatItem(
-                        '未完成',
+                        context,
+                        AppLocalizations.of(context)!.incomplete,
                         '${totalHabits - completedToday}',
                         Colors.grey.shade500,
                         Icons.radio_button_unchecked,
@@ -137,7 +141,7 @@ class StatsCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                _getMotivationalMessage(),
+                _getMotivationalMessage(context),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppTheme.primaryColor,
                   fontWeight: FontWeight.w500,
@@ -151,7 +155,7 @@ class StatsCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(String label, String value, Color color, IconData icon) {
+  Widget _buildStatItem(BuildContext context, String label, String value, Color color, IconData icon) {
     return Row(
       children: [
         Icon(
@@ -190,29 +194,31 @@ class StatsCard extends StatelessWidget {
     }
   }
 
-  String _getCompletionText() {
+  String _getCompletionText(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     if (completionRate >= 1.0) {
-      return '完美';
+      return localizations.perfect;
     } else if (completionRate >= 0.8) {
-      return '优秀';
+      return localizations.excellent;
     } else if (completionRate >= 0.5) {
-      return '良好';
+      return localizations.good;
     } else {
-      return '加油';
+      return localizations.keepGoing;
     }
   }
 
-  String _getMotivationalMessage() {
+  String _getMotivationalMessage(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     if (completionRate >= 1.0) {
-      return '🎉 今天表现完美！继续保持这个节奏！';
+      return localizations.perfectMessage;
     } else if (completionRate >= 0.8) {
-      return '👏 做得很好！再努力一点就能达到完美！';
+      return localizations.excellentMessage;
     } else if (completionRate >= 0.5) {
-      return '💪 不错的开始！继续加油完成剩余任务！';
+      return localizations.goodMessage;
     } else if (totalHabits > 0) {
-      return '🌟 每一步都是进步！现在开始也不晚！';
+      return localizations.encouragementMessage;
     } else {
-      return '🚀 创建你的第一个习惯，开始改变之旅！';
+      return localizations.firstHabitMessage;
     }
   }
 }

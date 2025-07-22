@@ -6,6 +6,7 @@ import '../core/router/app_router.dart';
 import '../core/services/audio_service.dart';
 import '../models/habit_item.dart';
 import '../providers/habit_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecordStatementScreen extends StatefulWidget {
   final String statement;
@@ -89,14 +90,14 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('录音启动失败，请重试')),
+            SnackBar(content: Text(AppLocalizations.of(context)!.recordingFailed)),
           );
         }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('录音出错: $e')),
+          SnackBar(content: Text(AppLocalizations.of(context)!.recordingError(e.toString()))),
         );
       }
     }
@@ -107,26 +108,19 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('需要麦克风权限'),
-          content: const Text(
-            '为了录制您的习惯语句，需要访问麦克风权限。\n\n'
-            '请按照以下步骤操作：\n'
-            '1. 点击"去设置"按钮\n'
-            '2. 找到"麦克风"选项\n'
-            '3. 打开麦克风权限\n'
-            '4. 返回App重试',
-          ),
+          title: Text(AppLocalizations.of(context)!.microphonePermissionNeeded),
+          content: Text(AppLocalizations.of(context)!.permissionInstructions),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('取消'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop();
                 await openAppSettings();
               },
-              child: const Text('去设置'),
+              child: Text(AppLocalizations.of(context)!.goToSettings),
             ),
           ],
         );
@@ -186,7 +180,7 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
   Future<void> _saveAndContinue() async {
     if (_recordingPath == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('请先录制语音')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.pleaseRecordFirst)),
       );
       return;
     }
@@ -210,7 +204,7 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('保存失败: $e')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.saveFailed(e.toString()))),
       );
     }
   }
@@ -220,7 +214,7 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: const Text('录制语句'),
+        title: Text(AppLocalizations.of(context)!.recordStatement),
         backgroundColor: AppTheme.backgroundColor,
         elevation: 0,
       ),
@@ -260,7 +254,7 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          '说慢一点，说满5秒以上',
+                          AppLocalizations.of(context)!.speakSlowly,
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppTheme.textSecondaryColor,
                           ),
@@ -317,10 +311,10 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
                     // Status text
                     Text(
                       _isRecording
-                          ? '正在录音...'
+                          ? AppLocalizations.of(context)!.isRecording
                           : _recordingPath != null
-                              ? '录音完成'
-                              : '点击开始录音',
+                              ? AppLocalizations.of(context)!.recordingCompleted
+                              : AppLocalizations.of(context)!.tapToStartRecording,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: AppTheme.textPrimaryColor,
@@ -338,7 +332,7 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
                           OutlinedButton.icon(
                             onPressed: _isPlaying ? _stopPlaying : _playRecording,
                             icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow),
-                            label: Text(_isPlaying ? '停止' : '播放'),
+                            label: Text(_isPlaying ? AppLocalizations.of(context)!.stop : AppLocalizations.of(context)!.play),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24,
@@ -351,7 +345,7 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
                           OutlinedButton.icon(
                             onPressed: _reRecord,
                             icon: const Icon(Icons.refresh),
-                            label: const Text('重录'),
+                            label: Text(AppLocalizations.of(context)!.reRecord),
                             style: OutlinedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24,
@@ -383,8 +377,8 @@ class _RecordStatementScreenState extends State<RecordStatementScreen>
                               ),
                               shadowColor: Colors.transparent,
                             ),
-                            child: const Text(
-                              '保存并继续',
+                            child: Text(
+                              AppLocalizations.of(context)!.saveAndContinue,
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,

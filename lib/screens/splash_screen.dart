@@ -4,6 +4,7 @@ import '../core/theme/app_theme.dart';
 import '../core/router/app_router.dart';
 import '../providers/app_settings_provider.dart';
 import '../providers/habit_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -134,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen>
                     
                     // App name
                     Text(
-                      'Neverr',
+                      AppLocalizations.of(context)!.appTitle,
                       style: Theme.of(context).textTheme.displayLarge?.copyWith(
                         color: AppTheme.primaryColor,
                         fontWeight: FontWeight.bold,
@@ -144,7 +145,7 @@ class _SplashScreenState extends State<SplashScreen>
                     
                     // Slogan
                     Text(
-                      '不止是戒掉，而是变更好。',
+                      AppLocalizations.of(context)!.slogan,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: AppTheme.textSecondaryColor,
                         fontWeight: FontWeight.w500,
@@ -180,7 +181,7 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      '正在初始化...',
+                      AppLocalizations.of(context)!.initializing,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppTheme.textSecondaryColor,
                       ),
