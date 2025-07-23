@@ -16,7 +16,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
 
   @override
@@ -31,14 +30,6 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(seconds: 2),
       vsync: this,
     );
-
-    _scaleAnimation = Tween<double>(
-      begin: 0.5,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.elasticOut,
-    ));
 
     _opacityAnimation = Tween<double>(
       begin: 0.0,
@@ -97,12 +88,9 @@ class _SplashScreenState extends State<SplashScreen>
               AnimatedBuilder(
                 animation: _animationController,
                 builder: (context, child) {
-                  return Transform.scale(
-                    scale: _scaleAnimation.value,
-                    child: Opacity(
-                      opacity: _opacityAnimation.value,
-                      child: child,
-                    ),
+                  return Opacity(
+                    opacity: _opacityAnimation.value,
+                    child: child,
                   );
                 },
                 child: Column(
