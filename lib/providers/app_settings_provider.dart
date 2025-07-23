@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:ui' as ui;
 import '../models/app_settings.dart';
 import '../core/services/notification_service.dart';
 import '../core/services/storage_service.dart';
@@ -42,7 +43,7 @@ class AppSettingsProvider with ChangeNotifier {
           minute: prefs.getInt('reminder_end_minute') ?? 0,
         ),
         reminderIntervalMinutes: prefs.getInt('reminder_interval_minutes') ?? 30,
-        language: prefs.getString('language') ?? 'zh',
+        language: prefs.getString('language') ?? _getSystemLanguage(),
         themeMode: ThemeMode.values[prefs.getInt('theme_mode') ?? 0],
         isFirstLaunch: prefs.getBool('is_first_launch') ?? true,
         onboardingCompleted: prefs.getBool('onboarding_completed') ?? false,
@@ -204,5 +205,20 @@ class AppSettingsProvider with ChangeNotifier {
     
     final index = DateTime.now().day % messages.length;
     return messages[index];
+  }
+
+  /// 获取系统语言，如果是中文则返回'zh'，否则返回'en'
+  String _getSystemLanguage() {
+    try {
+      final systemLocale = ui.PlatformDispatcher.instance.locale;
+      if (systemLocale.languageCode == 'zh') {
+        return 'zh';
+      } else {
+        return 'en';
+      }
+    } catch (e) {
+      debugPrint('Error getting system language: $e');
+      return 'en'; // 默认回退到英文
+    }
   }
 }

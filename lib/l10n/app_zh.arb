@@ -851,7 +851,7 @@
   "@onboardingDescription2": {
     "description": "Onboarding page 2 description"
   },
-  "onboardingTitle3": "每天听一遍",
+  "onboardingTitle3": "每天听几遍",
   "@onboardingTitle3": {
     "description": "Onboarding page 3 title"
   },
@@ -859,7 +859,7 @@
   "@onboardingSubtitle3": {
     "description": "Onboarding page 3 subtitle"
   },
-  "onboardingDescription3": "每天播放一遍你的声音宣言，持续5秒以上。重复的力量会帮你重塑潜意识。",
+  "onboardingDescription3": "每天朗读或播放数遍你的宣言。重复的力量会帮你重塑潜意识。",
   "@onboardingDescription3": {
     "description": "Onboarding page 3 description"
   },
