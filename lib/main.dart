@@ -8,7 +8,7 @@ import 'core/services/notification_service.dart';
 import 'core/services/storage_service.dart';
 import 'providers/habit_provider.dart';
 import 'providers/app_settings_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

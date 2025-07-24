@@ -79,7 +79,10 @@
   "aboutDialogVersion": "Version: v1.0.0",
   "aboutDialogDescription": "Neverr is an app that helps you change habits by recording and repeatedly playing your own voice to reshape your subconscious.",
   "aboutDialogInspiration": "Based on research in subconscious and habit change, inspired by Li Xiaolai's experience sharing articles.",
-  "footer": "© 2024 Neverr App\nMade with ❤️ for better habits",
+  "footer": "© 2025 Neverr\nMade with ❤️ for better habits",
+  "@footer": {
+    "description": "App footer"
+  },
   
   "dataStatistics": "Statistics",
   "checkInCalendar": "Activity Calendar",

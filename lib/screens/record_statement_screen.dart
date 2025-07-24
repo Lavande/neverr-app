@@ -6,7 +6,7 @@ import '../core/router/app_router.dart';
 import '../core/services/audio_service.dart';
 import '../models/habit_item.dart';
 import '../providers/habit_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class RecordStatementScreen extends StatefulWidget {
   final String statement;

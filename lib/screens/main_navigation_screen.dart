@@ -7,7 +7,7 @@ import '../providers/app_settings_provider.dart';
 import '../widgets/habit_card.dart';
 import 'settings_screen.dart';
 import 'data_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -119,23 +119,31 @@ class _HomeTabState extends State<HomeTab> {
                       padding: const EdgeInsets.fromLTRB(24, 50, 24, 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            _getGreeting(context),
-                            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.textPrimaryColor,
-                              fontSize: 28,
+                          Flexible(
+                            child: Text(
+                              _getGreeting(context),
+                              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.textPrimaryColor,
+                                fontSize: 28,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            _getMotivationalMessage(context),
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: AppTheme.textSecondaryColor,
-                              fontSize: 16,
+                          Flexible(
+                            child: Text(
+                              _getMotivationalMessage(context),
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: AppTheme.textSecondaryColor,
+                                fontSize: 16,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            maxLines: 2,
                           ),
                         ],
                       ),

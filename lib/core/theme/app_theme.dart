@@ -92,7 +92,7 @@ class AppTheme {
           ),
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: const CardThemeData().copyWith(
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -125,7 +125,7 @@ class AppTheme {
         ),
       ),
       // 对话框主题
-      dialogTheme: DialogTheme(
+      dialogTheme: const DialogThemeData().copyWith(
         backgroundColor: surfaceColor,
         elevation: 8,
         shape: RoundedRectangleBorder(
@@ -286,7 +286,7 @@ class AppTheme {
           fontWeight: FontWeight.w600,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: const CardThemeData().copyWith(
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -318,7 +318,7 @@ class AppTheme {
         ),
       ),
       // 暗色主题下的对话框主题
-      dialogTheme: DialogTheme(
+      dialogTheme: const DialogThemeData().copyWith(
         backgroundColor: const Color(0xFF2D3748),
         elevation: 8,
         shape: RoundedRectangleBorder(

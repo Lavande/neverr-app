@@ -5,7 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../core/theme/app_theme.dart';
 import '../providers/habit_provider.dart';
 import '../widgets/stats_card.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class DataScreen extends StatefulWidget {
   const DataScreen({super.key});

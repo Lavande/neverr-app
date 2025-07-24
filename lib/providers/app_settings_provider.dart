@@ -42,7 +42,7 @@ class AppSettingsProvider with ChangeNotifier {
           hour: prefs.getInt('reminder_end_hour') ?? 21,
           minute: prefs.getInt('reminder_end_minute') ?? 0,
         ),
-        reminderIntervalMinutes: prefs.getInt('reminder_interval_minutes') ?? 30,
+        reminderIntervalMinutes: prefs.getInt('reminder_interval_minutes') ?? 120,
         language: prefs.getString('language') ?? _getSystemLanguage(),
         themeMode: ThemeMode.values[prefs.getInt('theme_mode') ?? 0],
         isFirstLaunch: prefs.getBool('is_first_launch') ?? true,

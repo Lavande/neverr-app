@@ -3,7 +3,7 @@ import '../core/theme/app_theme.dart';
 import '../core/router/app_router.dart';
 import '../models/habit_category.dart';
 import '../services/habit_category_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class CreateGoalScreen extends StatefulWidget {
   const CreateGoalScreen({super.key});
