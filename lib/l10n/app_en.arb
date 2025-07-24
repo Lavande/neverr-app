@@ -12,11 +12,11 @@
   "goodEvening": "Good evening",
   "lateNight": "It's getting late. Time to rest",
   
-  "motivationalMessage1": "Every repetition is the beginning of change",
-  "motivationalMessage2": "Your voice is the power of transformation",
-  "motivationalMessage3": "Keep going, your future self will thank you",
-  "motivationalMessage4": "Change starts now, in this very moment",
-  "motivationalMessage5": "Believe in yourself, you're stronger than you think",
+  "motivationalMessage1": "Every repetition begins change",
+  "motivationalMessage2": "Your voice transforms you",
+  "motivationalMessage3": "Keep going, future you will thank you",
+  "motivationalMessage4": "Change starts now",
+  "motivationalMessage5": "Believe in yourself, you're stronger",
   
   "myHabits": "My Habits",
   "totalHabits": "{count} total",

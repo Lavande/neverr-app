@@ -36,23 +36,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lateNight => 'It\'s getting late. Time to rest';
 
   @override
-  String get motivationalMessage1 =>
-      'Every repetition is the beginning of change';
+  String get motivationalMessage1 => 'Every repetition begins change';
 
   @override
-  String get motivationalMessage2 =>
-      'Your voice is the power of transformation';
+  String get motivationalMessage2 => 'Your voice transforms you';
 
   @override
-  String get motivationalMessage3 =>
-      'Keep going, your future self will thank you';
+  String get motivationalMessage3 => 'Keep going, future you will thank you';
 
   @override
-  String get motivationalMessage4 => 'Change starts now, in this very moment';
+  String get motivationalMessage4 => 'Change starts now';
 
   @override
-  String get motivationalMessage5 =>
-      'Believe in yourself, you\'re stronger than you think';
+  String get motivationalMessage5 => 'Believe in yourself, you\'re stronger';
 
   @override
   String get myHabits => 'My Habits';

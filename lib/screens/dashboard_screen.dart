@@ -77,7 +77,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   color: AppTheme.textSecondaryColor,
                                 ),
                                 overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
+                                maxLines: 1,
                               ),
                             ),
                           ],
