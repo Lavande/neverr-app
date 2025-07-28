@@ -3,6 +3,9 @@ name: Build and Release APK
 on:
   release:
     types: [published]
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   build-android:
@@ -30,39 +33,63 @@ jobs:
       run: |
         echo "=== Current working directory ==="
         pwd
+        echo ""
         echo "=== Root directory contents ==="
         ls -la
-        echo "=== Check if neverr_app exists ==="
-        if [ -d "neverr_app" ]; then
-          echo "✅ neverr_app directory found"
-          ls -la neverr_app/
+        echo ""
+        echo "=== Looking for Flutter projects ==="
+        find . -name "pubspec.yaml" -type f
+        echo ""
+        echo "=== Looking for any directories containing 'app' or 'neverr' ==="
+        find . -type d -name "*app*" -o -name "*neverr*" | head -10
+        echo ""
+        echo "=== All directories in root ==="
+        ls -d */ 2>/dev/null || echo "No directories found"
+        
+    - name: Determine Flutter project directory
+      id: flutter_dir
+      run: |
+        # Find the directory containing pubspec.yaml
+        if [ -f "pubspec.yaml" ]; then
+          echo "Flutter project is in root directory"
+          echo "FLUTTER_DIR=." >> $GITHUB_OUTPUT
+        elif [ -f "neverr_app/pubspec.yaml" ]; then
+          echo "Flutter project is in neverr_app directory"
+          echo "FLUTTER_DIR=neverr_app" >> $GITHUB_OUTPUT
         else
-          echo "❌ neverr_app directory not found"
-          echo "Available directories:"
-          find . -type d -name "*app*" -o -name "*flutter*" -o -name "*neverr*" | head -10
+          # Search for pubspec.yaml
+          FLUTTER_PROJECT=$(find . -name "pubspec.yaml" -type f | head -1)
+          if [ -n "$FLUTTER_PROJECT" ]; then
+            FLUTTER_DIR=$(dirname "$FLUTTER_PROJECT")
+            echo "Flutter project found in: $FLUTTER_DIR"
+            echo "FLUTTER_DIR=$FLUTTER_DIR" >> $GITHUB_OUTPUT
+          else
+            echo "❌ No Flutter project found!"
+            exit 1
+          fi
         fi
         
     - name: Install Flutter dependencies
       run: |
-        cd neverr_app
+        cd ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}
         flutter pub get
       
     - name: Build release APK
       run: |
-        cd neverr_app
+        cd ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}
         flutter build apk --release
       
     - name: Build release AAB
       run: |
-        cd neverr_app
+        cd ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}
         flutter build appbundle --release
       
     - name: Upload build artifacts
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          neverr_app/build/app/outputs/flutter-apk/app-release.apk
-          neverr_app/build/app/outputs/bundle/release/app-release.aab
+          ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}/build/app/outputs/flutter-apk/app-release.apk
+          ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}/build/app/outputs/bundle/release/app-release.aab
         name: Neverr App ${{ github.event.release.tag_name }}
         body: |
           ## 📱 下载说明 / Download Instructions
