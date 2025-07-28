@@ -1,0 +1,57 @@
+name: Build and Release APK
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-android:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.27.0'
+        channel: 'stable'
+        cache: true
+        
+    - name: Install dependencies
+      working-directory: ./neverr_app
+      run: flutter pub get
+      
+    - name: Build APK
+      working-directory: ./neverr_app
+      run: flutter build apk --release
+      
+    - name: Build AAB for Play Store
+      working-directory: ./neverr_app
+      run: flutter build appbundle --release
+      
+    - name: Upload Universal APK
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          neverr_app/build/app/outputs/flutter-apk/app-release.apk
+          neverr_app/build/app/outputs/bundle/release/app-release.aab
+        name: Neverr App ${{ github.event.release.tag_name }}
+        body: |
+          ## 下载说明 / Download Instructions
+          
+          - **APK**: 直接安装到Android设备 / Direct install on Android devices
+          - **AAB**: Google Play商店发布文件 / Google Play Store release file
+          
+          ### 新功能 / New Features
+          请查看发布说明获取详细信息 / Please check release notes for details
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
