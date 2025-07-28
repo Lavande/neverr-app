@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+  
 jobs:
   build-android:
     name: Build Android APK
@@ -85,6 +88,34 @@ jobs:
         cd ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}
         flutter build appbundle --release
       
+    - name: Verify build artifacts
+      if: github.event_name == 'release'
+      run: |
+        echo "=== Checking for build artifacts ==="
+        FLUTTER_DIR="${{ steps.flutter_dir.outputs.FLUTTER_DIR }}"
+        APK_PATH="$FLUTTER_DIR/build/app/outputs/flutter-apk/app-release.apk"
+        AAB_PATH="$FLUTTER_DIR/build/app/outputs/bundle/release/app-release.aab"
+        
+        echo "Flutter directory: $FLUTTER_DIR"
+        echo "APK path: $APK_PATH"
+        echo "AAB path: $AAB_PATH"
+        
+        if [ -f "$APK_PATH" ]; then
+          echo "✅ APK found: $(ls -lh "$APK_PATH")"
+        else
+          echo "❌ APK not found at $APK_PATH"
+          echo "Available files in flutter-apk directory:"
+          ls -la "$FLUTTER_DIR/build/app/outputs/flutter-apk/" || echo "Directory not found"
+        fi
+        
+        if [ -f "$AAB_PATH" ]; then
+          echo "✅ AAB found: $(ls -lh "$AAB_PATH")"
+        else
+          echo "❌ AAB not found at $AAB_PATH"
+          echo "Available files in bundle/release directory:"
+          ls -la "$FLUTTER_DIR/build/app/outputs/bundle/release/" || echo "Directory not found"
+        fi
+        
     - name: Upload build artifacts to Release
       if: github.event_name == 'release'
       uses: softprops/action-gh-release@v1
@@ -92,7 +123,6 @@ jobs:
         files: |
           ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}/build/app/outputs/flutter-apk/app-release.apk
           ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}/build/app/outputs/bundle/release/app-release.aab
-        name: Neverr App ${{ github.event.release.tag_name }}
         body: |
           ## 📱 下载说明 / Download Instructions
           
