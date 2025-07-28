@@ -4,6 +4,7 @@ import '../core/theme/app_theme.dart';
 import '../providers/app_settings_provider.dart';
 import '../providers/habit_provider.dart';
 import '../l10n/app_localizations.dart';
+import '../core/services/notification_service.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -41,7 +42,14 @@ class SettingsScreen extends StatelessWidget {
                       AppLocalizations.of(context)!.enableNotifications,
                       AppLocalizations.of(context)!.enableNotificationsDescription,
                       settings.notificationsEnabled,
-                      (value) => settings.updateNotificationsEnabled(value),
+                      (value) async {
+                        if (value) {
+                          // Request permission first before enabling
+                          await settings.setupInitialNotification();
+                        } else {
+                          await settings.updateNotificationsEnabled(value);
+                        }
+                      },
                     ),
                     if (settings.notificationsEnabled) ...[
                       _buildReminderTimeRangeTile(
@@ -179,14 +187,16 @@ class SettingsScreen extends StatelessWidget {
     String title,
     String subtitle,
     bool value,
-    ValueChanged<bool> onChanged,
+    Function(bool) onChanged,
   ) {
     return ListTile(
       title: Text(title),
       subtitle: Text(subtitle),
       trailing: Switch(
         value: value,
-        onChanged: onChanged,
+        onChanged: (newValue) async {
+          await onChanged(newValue);
+        },
       ),
     );
   }

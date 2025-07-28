@@ -17,6 +17,9 @@ void main() async {
   await NotificationService.initialize();
   await StorageService.initialize();
   
+  // Request notification permissions on startup
+  await NotificationService.requestPermission();
+  
   runApp(const MyApp());
 }
 
@@ -28,7 +31,13 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => HabitProvider()),
-        ChangeNotifierProvider(create: (_) => AppSettingsProvider()),
+        ChangeNotifierProvider(
+          create: (_) {
+            final provider = AppSettingsProvider();
+            provider.initialize();
+            return provider;
+          },
+        ),
       ],
       child: Consumer<AppSettingsProvider>(
         builder: (context, settingsProvider, child) {

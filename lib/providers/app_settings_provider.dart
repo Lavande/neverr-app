@@ -161,24 +161,34 @@ class AppSettingsProvider with ChangeNotifier {
   }
 
   Future<void> _scheduleNotifications() async {
-    await NotificationService.scheduleIntervalReminders(
-      startTime: _settings.reminderStartTime,
-      endTime: _settings.reminderEndTime,
-      intervalMinutes: _settings.reminderIntervalMinutes,
-      title: 'Neverr 提醒',
-      body: '该进行今日的习惯练习了！',
-    );
+    try {
+      await NotificationService.scheduleIntervalReminders(
+        startTime: _settings.reminderStartTime,
+        endTime: _settings.reminderEndTime,
+        intervalMinutes: _settings.reminderIntervalMinutes,
+        title: 'Neverr 提醒',
+        body: '该进行今日的习惯练习了！',
+      );
+    } catch (e) {
+      debugPrint('Failed to schedule notifications: $e');
+      // If scheduling fails, disable notifications
+      _settings = _settings.copyWith(notificationsEnabled: false);
+      await _saveSettings();
+      notifyListeners();
+    }
   }
 
   Future<void> setupInitialNotification() async {
-    if (_settings.notificationsEnabled) {
-      final hasPermission = await NotificationService.requestPermission();
-      if (hasPermission) {
-        await _scheduleNotifications();
-      } else {
-        await updateNotificationsEnabled(false);
-      }
+    final hasPermission = await NotificationService.requestPermission();
+    if (hasPermission) {
+      _settings = _settings.copyWith(notificationsEnabled: true);
+      await _saveSettings();
+      await _scheduleNotifications();
+    } else {
+      _settings = _settings.copyWith(notificationsEnabled: false);
+      await _saveSettings();
     }
+    notifyListeners();
   }
 
   String getGreeting() {
