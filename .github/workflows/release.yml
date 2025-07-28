@@ -88,7 +88,8 @@ jobs:
         cd ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}
         flutter build appbundle --release
       
-    - name: Upload build artifacts
+    - name: Upload build artifacts to Release
+      if: github.event_name == 'release'
       uses: softprops/action-gh-release@v1
       with:
         files: |
@@ -104,4 +105,36 @@ jobs:
           ### 🆕 新功能 / New Features
           请查看发布说明获取详细信息 / Please check release notes for details
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload build artifacts as workflow artifacts
+      if: github.event_name != 'release'
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-builds
+        path: |
+          ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}/build/app/outputs/flutter-apk/app-release.apk
+          ${{ steps.flutter_dir.outputs.FLUTTER_DIR }}/build/app/outputs/bundle/release/app-release.aab
+        retention-days: 30
+        
+    - name: Build Success Summary
+      run: |
+        echo "🎉 Android build completed successfully!"
+        echo ""
+        if [ "${{ github.event_name }}" == "release" ]; then
+          echo "📦 Files uploaded to GitHub Release:"
+          echo "   - APK: app-release.apk"
+          echo "   - AAB: app-release.aab"
+        else
+          echo "📦 Files uploaded as workflow artifacts:"
+          echo "   - Download from the Actions tab in GitHub"
+          echo "   - Look for 'android-builds' artifact"
+          echo "   - APK: app-release.apk"
+          echo "   - AAB: app-release.aab"
+          echo ""
+          echo "💡 To create a proper release:"
+          echo "   1. Go to GitHub repository"
+          echo "   2. Click 'Releases' → 'Create a new release'"
+          echo "   3. Tag: v1.0.x, Title: Release name"
+          echo "   4. Files will be automatically attached"
+        fi 
