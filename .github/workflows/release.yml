@@ -26,16 +26,25 @@ jobs:
         channel: 'stable'
         cache: true
         
+    - name: Debug - List directory contents
+      run: |
+        echo "Current directory:"
+        pwd
+        echo "Directory contents:"
+        ls -la
+        echo "Looking for neverr_app directory:"
+        ls -la neverr_app/ || echo "neverr_app directory not found"
+        
     - name: Install dependencies
-      working-directory: ./neverr_app
+      working-directory: neverr_app
       run: flutter pub get
       
     - name: Build APK
-      working-directory: ./neverr_app
+      working-directory: neverr_app
       run: flutter build apk --release
       
     - name: Build AAB for Play Store
-      working-directory: ./neverr_app
+      working-directory: neverr_app
       run: flutter build appbundle --release
       
     - name: Upload Universal APK
