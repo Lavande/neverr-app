@@ -26,28 +26,38 @@ jobs:
         channel: 'stable'
         cache: true
         
-    - name: Debug - List directory contents
+    - name: Debug directory structure
       run: |
-        echo "Current directory:"
+        echo "=== Current working directory ==="
         pwd
-        echo "Directory contents:"
+        echo "=== Root directory contents ==="
         ls -la
-        echo "Looking for neverr_app directory:"
-        ls -la neverr_app/ || echo "neverr_app directory not found"
+        echo "=== Check if neverr_app exists ==="
+        if [ -d "neverr_app" ]; then
+          echo "✅ neverr_app directory found"
+          ls -la neverr_app/
+        else
+          echo "❌ neverr_app directory not found"
+          echo "Available directories:"
+          find . -type d -name "*app*" -o -name "*flutter*" -o -name "*neverr*" | head -10
+        fi
         
-    - name: Install dependencies
-      working-directory: neverr_app
-      run: flutter pub get
+    - name: Install Flutter dependencies
+      run: |
+        cd neverr_app
+        flutter pub get
       
-    - name: Build APK
-      working-directory: neverr_app
-      run: flutter build apk --release
+    - name: Build release APK
+      run: |
+        cd neverr_app
+        flutter build apk --release
       
-    - name: Build AAB for Play Store
-      working-directory: neverr_app
-      run: flutter build appbundle --release
+    - name: Build release AAB
+      run: |
+        cd neverr_app
+        flutter build appbundle --release
       
-    - name: Upload Universal APK
+    - name: Upload build artifacts
       uses: softprops/action-gh-release@v1
       with:
         files: |
@@ -55,12 +65,12 @@ jobs:
           neverr_app/build/app/outputs/bundle/release/app-release.aab
         name: Neverr App ${{ github.event.release.tag_name }}
         body: |
-          ## 下载说明 / Download Instructions
+          ## 📱 下载说明 / Download Instructions
           
           - **APK**: 直接安装到Android设备 / Direct install on Android devices
           - **AAB**: Google Play商店发布文件 / Google Play Store release file
           
-          ### 新功能 / New Features
+          ### 🆕 新功能 / New Features
           请查看发布说明获取详细信息 / Please check release notes for details
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
