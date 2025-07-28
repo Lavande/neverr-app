@@ -25,6 +25,12 @@ class AppSettingsProvider with ChangeNotifier {
   Future<void> initialize() async {
     await _loadSettings();
     _isInitialized = true;
+    
+    // 如果是第一次启动且默认启用了通知，需要正确初始化通知
+    if (_settings.isFirstLaunch && _settings.notificationsEnabled) {
+      await _handleFirstLaunchNotificationSetup();
+    }
+    
     notifyListeners();
   }
 
@@ -189,6 +195,29 @@ class AppSettingsProvider with ChangeNotifier {
       await _saveSettings();
     }
     notifyListeners();
+  }
+
+  Future<void> _handleFirstLaunchNotificationSetup() async {
+    debugPrint('First launch notification setup started');
+    
+    // 检查是否已有通知权限
+    final hasPermission = await NotificationService.hasPermission();
+    
+    if (hasPermission) {
+      // 如果已有权限，直接设置通知
+      debugPrint('Notification permission already granted, setting up notifications');
+      await _scheduleNotifications();
+    } else {
+      // 如果没有权限，将默认的通知开启状态改为关闭
+      // 不在第一次启动时弹出权限请求，让用户主动选择
+      debugPrint('No notification permission, disabling default notification setting');
+      _settings = _settings.copyWith(notificationsEnabled: false);
+      await _saveSettings();
+    }
+    
+    // 标记第一次启动完成
+    await markFirstLaunchComplete();
+    debugPrint('First launch notification setup completed');
   }
 
   String getGreeting() {
