@@ -25,9 +25,13 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.27.0'
         channel: 'stable'
         cache: true
+        
+    - name: Configure Flutter
+      run: |
+        flutter config --no-analytics
+        flutter --version
         
     - name: Debug directory structure
       run: |
